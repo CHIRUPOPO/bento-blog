@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
   <!-- サンプル画像：たまごやきとタコさんウインナーのお弁当 -->
-  <rect width="400" height="300" fill="#fff3e0"/>
+  <rect width="400" height="300" fill="#f6f9f4"/>
   <!-- ランチクロス -->
   <g opacity="0.35">
-    <rect x="0" y="0" width="400" height="300" fill="#9ec787"/>
+    <rect x="0" y="0" width="400" height="300" fill="#a8c8a0"/>
     <g fill="#ffffff" opacity="0.5">
       <rect x="0" y="0" width="400" height="25"/><rect x="0" y="50" width="400" height="25"/>
       <rect x="0" y="100" width="400" height="25"/><rect x="0" y="150" width="400" height="25"/>
@@ -15,7 +15,7 @@
     </g>
   </g>
   <!-- お弁当箱 -->
-  <rect x="60" y="65" width="280" height="180" rx="24" fill="#f2a341"/>
+  <rect x="60" y="65" width="280" height="180" rx="24" fill="#6f9468"/>
   <rect x="74" y="79" width="252" height="152" rx="16" fill="#fffdf5"/>
   <!-- ごはん（左半分） -->
   <path d="M88 92 h100 v126 h-100 a14 14 0 0 1 -14 -14 v-98 a14 14 0 0 1 14 -14 z" fill="#ffffff" stroke="#f0e6d6" stroke-width="3"/>
@@ -47,5 +47,5 @@
   <circle cx="295" cy="192" r="18" fill="#e8554f"/>
   <ellipse cx="289" cy="185" rx="5" ry="4" fill="#f08a86"/>
   <path d="M295 174 l-4 -7 M295 174 l5 -6" stroke="#6e9e55" stroke-width="4" stroke-linecap="round"/>
-  <text x="200" y="282" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#a08465">（サンプル画像です。あとで本物の写真と入れかえてね）</text>
+  <text x="200" y="282" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#948f9e">（サンプル画像です。あとで本物の写真と入れかえてね）</text>
 </svg>

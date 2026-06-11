@@ -4,13 +4,15 @@
    ========================================= */
 
 :root {
-  --cream: #fff8ef;
-  --pink: #f7b8c2;
-  --pink-dark: #e98a99;
-  --red: #e8716d;
-  --brown: #6b4f3a;
-  --brown-light: #a08465;
-  --green: #9ec787;
+  --white: #fdfdfb;
+  --lavender-pale: #f3f0fa;
+  --lavender: #c9bce4;
+  --lavender-deep: #8d7bb8;
+  --green-pale: #eef4ea;
+  --green: #a8c8a0;
+  --green-deep: #6f9468;
+  --gray-text: #5a5560;
+  --gray-soft: #948f9e;
 }
 
 * {
@@ -19,47 +21,56 @@
 
 body {
   margin: 0;
-  background-color: var(--cream);
-  /* うっすら水玉模様の背景 */
-  background-image: radial-gradient(rgba(247, 184, 194, 0.25) 12%, transparent 13%);
-  background-size: 38px 38px;
-  color: var(--brown);
+  background-color: var(--white);
+  /* ごくうっすらとしたラベンダーの水玉 */
+  background-image: radial-gradient(rgba(201, 188, 228, 0.18) 10%, transparent 11%);
+  background-size: 44px 44px;
+  color: var(--gray-text);
   font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
   line-height: 1.8;
 }
 
-/* ---------- ヘッダー（ギンガムチェックのランチクロス風） ---------- */
+/* ---------- ヘッダー（白ベースにラベンダーとグリーンのライン） ---------- */
 
 .site-header {
-  background-image:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.45) 0 14px, transparent 14px 28px),
-    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.45) 0 14px, transparent 14px 28px),
-    linear-gradient(var(--pink), var(--pink));
-  padding: 44px 16px 38px;
+  background: #ffffff;
+  padding: 48px 16px 36px;
   text-align: center;
-  border-bottom: 6px dotted #fff;
+  border-top: 6px solid var(--lavender);
+  border-bottom: 1px solid #eceaf2;
+  position: relative;
+}
+
+/* ヘッダー下にそっと草色のステッチ */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--green) 0 33%, var(--lavender) 33% 66%, var(--green) 66%);
 }
 
 .header-inner {
   display: inline-block;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 28px;
-  padding: 18px 34px;
-  box-shadow: 0 4px 0 rgba(233, 138, 153, 0.45);
 }
 
 .site-title {
   font-family: "Kiwi Maru", "Zen Maru Gothic", sans-serif;
-  font-size: 1.7rem;
+  font-size: 1.65rem;
   margin: 0;
-  color: var(--red);
-  letter-spacing: 0.06em;
+  color: var(--lavender-deep);
+  letter-spacing: 0.08em;
 }
 
 .site-subtitle {
-  margin: 6px 0 0;
-  font-size: 0.95rem;
-  color: var(--brown-light);
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+  color: var(--gray-soft);
+  letter-spacing: 0.06em;
 }
 
 /* ---------- お弁当カードの一覧 ---------- */
@@ -67,35 +78,36 @@ body {
 main {
   max-width: 680px;
   margin: 0 auto;
-  padding: 36px 16px 24px;
+  padding: 40px 16px 24px;
 }
 
 .card-list {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 40px;
 }
 
 .obento-card {
-  background: #fff;
-  border: 3px solid var(--pink);
-  border-radius: 26px;
-  padding: 18px 18px 22px;
-  box-shadow: 0 6px 0 rgba(233, 138, 153, 0.3);
+  background: #ffffff;
+  border: 1px solid #e9e5f1;
+  border-radius: 20px;
+  padding: 20px 20px 24px;
+  box-shadow: 0 8px 24px rgba(141, 123, 184, 0.10);
   position: relative;
 }
 
-/* カードの上にちょこんとリボン風の飾り */
+/* カードの上にそっと小さな飾り */
 .obento-card::before {
-  content: "🎀";
+  content: "🌿";
   position: absolute;
-  top: -18px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 1.4rem;
-  background: var(--cream);
-  padding: 0 8px;
-  border-radius: 50%;
+  font-size: 1.1rem;
+  background: var(--white);
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #e9e5f1;
 }
 
 .obento-photo {
@@ -104,40 +116,42 @@ main {
   height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: 18px;
-  border: 2px dashed var(--pink-dark);
-  background: var(--cream);
+  border-radius: 14px;
+  border: 1px solid #eceaf2;
+  background: var(--lavender-pale);
 }
 
 .obento-date {
   display: inline-block;
-  margin: 16px 0 4px;
-  background: var(--green);
-  color: #fff;
+  margin: 18px 0 4px;
+  background: var(--green-pale);
+  color: var(--green-deep);
   font-weight: 700;
-  font-size: 0.95rem;
-  padding: 3px 16px;
+  font-size: 0.92rem;
+  padding: 3px 18px;
   border-radius: 999px;
+  border: 1px solid #d9e6d3;
   letter-spacing: 0.05em;
 }
 
 .obento-comment {
-  margin: 8px 4px 0;
-  font-size: 1.05rem;
+  margin: 10px 4px 0;
+  font-size: 1.02rem;
 }
 
 .empty-message {
   text-align: center;
-  color: var(--brown-light);
+  color: var(--gray-soft);
 }
 
 /* ---------- フッター ---------- */
 
 .site-footer {
   text-align: center;
-  padding: 20px 16px 36px;
-  color: var(--brown-light);
-  font-size: 0.92rem;
+  padding: 24px 16px 40px;
+  color: var(--gray-soft);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
 }
 
 /* ---------- スマホで見たとき ---------- */
@@ -145,9 +159,5 @@ main {
 @media (max-width: 480px) {
   .site-title {
     font-size: 1.25rem;
-  }
-
-  .header-inner {
-    padding: 14px 20px;
   }
 }
