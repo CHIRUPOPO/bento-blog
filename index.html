@@ -194,7 +194,9 @@
       modalImg.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
       document.getElementById("modal-date-en").textContent = cafeDate(y, m, d);
       document.getElementById("modal-date-ja").textContent = nihongoDate(y, m, d);
-      document.getElementById("modal-comment").textContent = entry.comment || "";
+      const commentEl = document.getElementById("modal-comment");
+      commentEl.textContent = entry.comment || "";
+      commentEl.hidden = !entry.comment; // コメントが空の日は欄ごと隠す
       modal.hidden = false;
       document.body.style.overflow = "hidden"; // 後ろのページが動かないように
     }
