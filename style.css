@@ -26,8 +26,8 @@ body {
   background-image: radial-gradient(rgba(201, 188, 228, 0.18) 10%, transparent 11%);
   background-size: 44px 44px;
   color: var(--gray-text);
-  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
-  line-height: 1.8;
+  font-family: "Zen Old Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  line-height: 1.9;
 }
 
 /* ---------- ヘッダー（カフェ風パンケーキ写真 × ラベンダーの大人かっこいい雰囲気） ----------
@@ -54,7 +54,8 @@ body {
 
 .site-eyebrow {
   margin: 0 0 10px;
-  font-size: 0.78rem;
+  font-family: "Playfair Display", serif;
+  font-size: 0.8rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.85);
   letter-spacing: 0.45em;
@@ -63,9 +64,9 @@ body {
 }
 
 .site-title {
-  font-family: "Kiwi Maru", "Zen Maru Gothic", sans-serif;
+  font-family: "Zen Old Mincho", "Hiragino Mincho ProN", serif;
   font-size: 2rem;
-  font-weight: 500;
+  font-weight: 600;
   margin: 0;
   color: #ffffff;
   letter-spacing: 0.14em;
@@ -142,22 +143,56 @@ main {
   background: var(--lavender-pale);
 }
 
+/* ---------- カフェのメニュー風の日付 ---------- */
+
 .obento-date {
-  display: inline-block;
-  margin: 18px 0 4px;
-  background: var(--green-pale);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 22px 4px 0;
+}
+
+.date-day {
+  font-family: "Playfair Display", serif;
+  font-size: 2.2rem;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--lavender-deep);
+}
+
+.date-side {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border-left: 1px solid #ddd7ea;
+  padding-left: 14px;
+}
+
+.date-month {
+  font-family: "Playfair Display", serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
   color: var(--green-deep);
-  font-weight: 700;
-  font-size: 0.92rem;
-  padding: 3px 18px;
-  border-radius: 999px;
-  border: 1px solid #d9e6d3;
-  letter-spacing: 0.05em;
+  line-height: 1;
+}
+
+.date-sub {
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  color: var(--gray-soft);
+  line-height: 1;
 }
 
 .obento-comment {
-  margin: 10px 4px 0;
-  font-size: 1.02rem;
+  margin: 14px 4px 0;
+  padding-top: 12px;
+  border-top: 1px dotted #ddd7ea;
+  font-size: 1rem;
+  line-height: 2;
+  letter-spacing: 0.05em;
 }
 
 .empty-message {
@@ -169,10 +204,10 @@ main {
 
 .site-footer {
   text-align: center;
-  padding: 24px 16px 40px;
+  padding: 24px 16px 44px;
   color: var(--gray-soft);
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
 }
 
 /* ---------- スマホで見たとき ---------- */
