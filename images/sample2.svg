@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <!-- サンプル画像：たまごやきとタコさんウインナーのお弁当 -->
+  <rect width="400" height="300" fill="#fff3e0"/>
+  <!-- ランチクロス -->
+  <g opacity="0.35">
+    <rect x="0" y="0" width="400" height="300" fill="#9ec787"/>
+    <g fill="#ffffff" opacity="0.5">
+      <rect x="0" y="0" width="400" height="25"/><rect x="0" y="50" width="400" height="25"/>
+      <rect x="0" y="100" width="400" height="25"/><rect x="0" y="150" width="400" height="25"/>
+      <rect x="0" y="200" width="400" height="25"/><rect x="0" y="250" width="400" height="25"/>
+      <rect x="0" y="0" width="25" height="300"/><rect x="50" y="0" width="25" height="300"/>
+      <rect x="100" y="0" width="25" height="300"/><rect x="150" y="0" width="25" height="300"/>
+      <rect x="200" y="0" width="25" height="300"/><rect x="250" y="0" width="25" height="300"/>
+      <rect x="300" y="0" width="25" height="300"/><rect x="350" y="0" width="25" height="300"/>
+    </g>
+  </g>
+  <!-- お弁当箱 -->
+  <rect x="60" y="65" width="280" height="180" rx="24" fill="#f2a341"/>
+  <rect x="74" y="79" width="252" height="152" rx="16" fill="#fffdf5"/>
+  <!-- ごはん（左半分） -->
+  <path d="M88 92 h100 v126 h-100 a14 14 0 0 1 -14 -14 v-98 a14 14 0 0 1 14 -14 z" fill="#ffffff" stroke="#f0e6d6" stroke-width="3"/>
+  <!-- ふりかけ -->
+  <g fill="#e8716d">
+    <circle cx="115" cy="120" r="4"/><circle cx="150" cy="135" r="4"/>
+    <circle cx="125" cy="165" r="4"/><circle cx="160" cy="185" r="4"/>
+    <circle cx="105" cy="195" r="4"/>
+  </g>
+  <!-- たまごやき -->
+  <g>
+    <rect x="205" y="95" width="54" height="54" rx="10" fill="#ffd24d" stroke="#f2a341" stroke-width="3"/>
+    <rect x="216" y="106" width="32" height="32" rx="8" fill="none" stroke="#f2a341" stroke-width="3"/>
+  </g>
+  <!-- タコさんウインナー -->
+  <g>
+    <ellipse cx="295" cy="115" rx="24" ry="20" fill="#e8554f"/>
+    <path d="M278 128 q-4 14 4 18 M290 132 q0 14 6 16 M302 132 q2 14 -2 17 M312 126 q6 12 0 18" stroke="#e8554f" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <circle cx="288" cy="112" r="3.5" fill="#3d2b1f"/>
+    <circle cx="303" cy="112" r="3.5" fill="#3d2b1f"/>
+  </g>
+  <!-- ブロッコリー -->
+  <g>
+    <circle cx="225" cy="190" r="16" fill="#7daf63"/>
+    <circle cx="243" cy="182" r="13" fill="#9ec787"/>
+    <circle cx="240" cy="200" r="12" fill="#6e9e55"/>
+  </g>
+  <!-- ミニトマト -->
+  <circle cx="295" cy="192" r="18" fill="#e8554f"/>
+  <ellipse cx="289" cy="185" rx="5" ry="4" fill="#f08a86"/>
+  <path d="M295 174 l-4 -7 M295 174 l5 -6" stroke="#6e9e55" stroke-width="4" stroke-linecap="round"/>
+  <text x="200" y="282" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#a08465">（サンプル画像です。あとで本物の写真と入れかえてね）</text>
+</svg>
