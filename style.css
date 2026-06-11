@@ -1,5 +1,5 @@
 /* =========================================
-   むすめのおべんとう記録 デザイン
+   今日の娘弁当 デザイン
    （このファイルはさわらなくて大丈夫です）
    ========================================= */
 
@@ -13,6 +13,8 @@
   --green-deep: #6f9468;
   --gray-text: #5a5560;
   --gray-soft: #948f9e;
+  --plum: #393052;        /* カレンダーの濃いラベンダー */
+  --plum-deep: #2c2540;
 }
 
 * {
@@ -95,109 +97,250 @@ body {
   background: rgba(255, 255, 255, 0.7);
 }
 
-/* ---------- お弁当カードの一覧 ---------- */
+/* ---------- カレンダー（ヘッダーに合わせた濃いラベンダーのパネル） ---------- */
 
 main {
-  max-width: 680px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 40px 16px 24px;
+  padding: 44px 14px 24px;
 }
 
-.card-list {
+.calendar-panel {
+  background: linear-gradient(160deg, var(--plum), var(--plum-deep));
+  border-radius: 24px;
+  padding: 26px 22px 30px;
+  box-shadow: 0 18px 50px rgba(44, 37, 64, 0.35);
+  border: 1px solid rgba(201, 188, 228, 0.25);
+}
+
+/* 月の切り替え */
+.cal-nav {
   display: flex;
-  flex-direction: column;
-  gap: 40px;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
 }
 
-.obento-card {
-  background: #ffffff;
-  border: 1px solid #e9e5f1;
-  border-radius: 20px;
-  padding: 20px 20px 24px;
-  box-shadow: 0 8px 24px rgba(141, 123, 184, 0.10);
+.cal-title {
+  text-align: center;
+}
+
+.cal-month {
+  display: block;
+  font-family: "Playfair Display", serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.cal-year {
+  display: block;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  color: var(--lavender);
+}
+
+.cal-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 188, 228, 0.5);
+  background: transparent;
+  color: var(--lavender);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: "Playfair Display", serif;
+}
+
+.cal-btn:hover:not(:disabled) {
+  background: rgba(201, 188, 228, 0.18);
+  color: #fff;
+}
+
+.cal-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+/* カレンダーの表 */
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.cal-wd {
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: rgba(201, 188, 228, 0.85);
+  padding: 4px 0 10px;
+}
+
+.cal-cell {
   position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
 }
 
-/* カードの上にそっと小さな飾り */
-.obento-card::before {
-  content: "🌿";
+.cal-cell.blank {
+  background: transparent;
+}
+
+.cal-daynum {
   position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 1.1rem;
-  background: var(--white);
-  padding: 0 10px;
-  border-radius: 999px;
-  border: 1px solid #e9e5f1;
+  top: 4px;
+  left: 5px;
+  z-index: 2;
+  font-family: "Playfair Display", serif;
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1;
+  padding: 2px 5px;
 }
 
-.obento-photo {
+/* 写真がある日 */
+.cal-cell.has-photo {
+  cursor: pointer;
+}
+
+.cal-cell.has-photo .cal-daynum {
+  background: rgba(44, 37, 64, 0.72);
+  border-radius: 999px;
+  color: #fff;
+}
+
+.cal-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.cal-cell.has-photo:hover .cal-photo,
+.cal-cell.has-photo:focus-visible .cal-photo {
+  transform: scale(1.08);
+}
+
+.cal-cell.has-photo:focus-visible {
+  outline: 2px solid var(--lavender);
+}
+
+/* 今日の日付 */
+.cal-cell.today {
+  box-shadow: inset 0 0 0 2px var(--green);
+}
+
+.cal-empty {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  letter-spacing: 0.1em;
+  color: rgba(201, 188, 228, 0.8);
+}
+
+/* ---------- 写真の拡大表示（クリックで開く窓） ---------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+/* hidden属性がついているときは確実に消す */
+.modal[hidden] {
+  display: none;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(30, 25, 48, 0.82);
+  backdrop-filter: blur(3px);
+}
+
+.modal-box {
+  position: relative;
+  margin: 0;
+  background: #fff;
+  border-radius: 18px;
+  max-width: 540px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.modal-img {
   display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-  border-radius: 14px;
-  border: 1px solid #eceaf2;
-  background: var(--lavender-pale);
 }
 
-/* ---------- カフェのメニュー風の日付 ---------- */
-
-.obento-date {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin: 22px 4px 0;
-}
-
-.date-day {
-  font-family: "Playfair Display", serif;
-  font-size: 2.2rem;
-  font-weight: 500;
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(44, 37, 64, 0.7);
+  color: #fff;
+  font-size: 1.4rem;
   line-height: 1;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: rgba(44, 37, 64, 0.95);
+}
+
+.modal-info {
+  padding: 18px 22px 24px;
+}
+
+.modal-date-en {
+  margin: 0;
+  font-family: "Playfair Display", serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.16em;
   color: var(--lavender-deep);
 }
 
-.date-side {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  border-left: 1px solid #ddd7ea;
-  padding-left: 14px;
-}
-
-.date-month {
-  font-family: "Playfair Display", serif;
+.modal-date-ja {
+  margin: 2px 0 0;
   font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  color: var(--green-deep);
-  line-height: 1;
-}
-
-.date-sub {
-  font-family: "Playfair Display", serif;
-  font-style: italic;
-  font-size: 0.74rem;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   color: var(--gray-soft);
-  line-height: 1;
 }
 
-.obento-comment {
-  margin: 14px 4px 0;
+.modal-comment {
+  margin: 12px 0 0;
   padding-top: 12px;
   border-top: 1px dotted #ddd7ea;
   font-size: 1rem;
   line-height: 2;
   letter-spacing: 0.05em;
-}
-
-.empty-message {
-  text-align: center;
-  color: var(--gray-soft);
 }
 
 /* ---------- フッター ---------- */
@@ -214,6 +357,30 @@ main {
 
 @media (max-width: 480px) {
   .site-title {
-    font-size: 1.25rem;
+    font-size: 1.4rem;
+  }
+
+  .calendar-panel {
+    padding: 18px 10px 22px;
+    border-radius: 18px;
+  }
+
+  .cal-grid {
+    gap: 4px;
+  }
+
+  .cal-daynum {
+    font-size: 0.66rem;
+    top: 2px;
+    left: 3px;
+  }
+
+  .cal-month {
+    font-size: 1.05rem;
+  }
+
+  .cal-btn {
+    width: 36px;
+    height: 36px;
   }
 }

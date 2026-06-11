@@ -20,97 +20,198 @@
   </header>
 
   <main>
-    <div id="obento-area" class="card-list">
-      <!-- お弁当の記録はここに自動で表示されます（obento.js を編集してください） -->
-    </div>
+    <section class="calendar-panel">
+      <nav class="cal-nav">
+        <button id="prev-month" class="cal-btn" aria-label="前の月へ">&#8249;</button>
+        <div class="cal-title">
+          <span id="cal-month" class="cal-month">JUNE</span>
+          <span id="cal-year" class="cal-year">2026</span>
+        </div>
+        <button id="next-month" class="cal-btn" aria-label="次の月へ">&#8250;</button>
+      </nav>
+      <div id="calendar" class="cal-grid"></div>
+      <p id="cal-empty" class="cal-empty" hidden>この月のお弁当記録はまだありません</p>
+    </section>
   </main>
 
   <footer class="site-footer">
-    <p>きょうも おいしく たべてくれますように 🌷</p>
+    <p>きょうも おいしく たべてくれますように</p>
   </footer>
+
+  <!-- 写真をクリックしたときに大きく表示する窓 -->
+  <div id="photo-modal" class="modal" hidden>
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+    <figure class="modal-box">
+      <button id="modal-close" class="modal-close" aria-label="閉じる">&times;</button>
+      <img id="modal-img" class="modal-img" src="" alt="">
+      <figcaption class="modal-info">
+        <p id="modal-date-en" class="modal-date-en"></p>
+        <p id="modal-date-ja" class="modal-date-ja"></p>
+        <p id="modal-comment" class="modal-comment"></p>
+      </figcaption>
+    </figure>
+  </div>
 
   <!-- お弁当のデータを読み込みます -->
   <script src="obento.js"></script>
   <script>
     // ▼▼ ここから下はプログラムです。さわらなくて大丈夫です ▼▼
 
-    // 日付（例: "2026-06-11"）を「2026年6月11日（木）」の形にする
-    function nihongoDate(dateText) {
-      const d = new Date(dateText + "T00:00:00");
-      if (isNaN(d)) return dateText; // 読み取れない場合はそのまま表示
-      const youbi = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
-      return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日（" + youbi + "）";
+    const MONTHS_EN = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
+                       "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
+    const WDAYS_EN = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const WDAYS_JA = ["日", "月", "火", "水", "木", "金", "土"];
+
+    // "2026-6-8" のような書き方でも "2026-06-08" に揃える
+    function normalizeKey(dateText) {
+      const p = String(dateText).trim().split("-");
+      if (p.length !== 3) return null;
+      const y = Number(p[0]), m = Number(p[1]), d = Number(p[2]);
+      if (!y || !m || !d) return null;
+      return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
     }
 
-    // 日付をカフェ風の英字表記（JUNE 11 / 2026 — THU）の部品に分ける
-    function cafeDate(dateText) {
-      const d = new Date(dateText + "T00:00:00");
-      if (isNaN(d)) return null;
-      const months = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-                      "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-      const wdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-      return { day: d.getDate(), month: months[d.getMonth()], year: d.getFullYear(), wday: wdays[d.getDay()] };
+    function nihongoDate(y, m, d) {
+      const wd = WDAYS_JA[new Date(y, m - 1, d).getDay()];
+      return y + "年" + m + "月" + d + "日（" + wd + "）";
     }
 
-    const area = document.getElementById("obento-area");
+    function cafeDate(y, m, d) {
+      const wd = WDAYS_EN[new Date(y, m - 1, d).getDay()];
+      return MONTHS_EN[m - 1] + " " + d + ", " + y + " — " + wd;
+    }
 
-    if (typeof obentoList === "undefined" || obentoList.length === 0) {
-      area.innerHTML = '<p class="empty-message">まだ記録がありません。obento.js にお弁当を追加してね 🍳</p>';
-    } else {
-      // 新しい日付が上に来るように並べかえる
-      const sorted = obentoList.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
-
-      for (const obento of sorted) {
-        const card = document.createElement("article");
-        card.className = "obento-card";
-
-        const img = document.createElement("img");
-        img.className = "obento-photo";
-        img.src = obento.photo;
-        img.alt = nihongoDate(obento.date) + "のお弁当";
-        img.loading = "lazy";
-        // 写真が見つからないときは、かわいいおにぎりの絵を出す
-        img.onerror = function () {
-          this.onerror = null;
-          this.src = "images/placeholder.svg";
-        };
-
-        const dateTag = document.createElement("div");
-        dateTag.className = "obento-date";
-        dateTag.title = nihongoDate(obento.date); // マウスをのせると日本語の日付が出る
-        const cd = cafeDate(obento.date);
-        if (cd) {
-          const dayEl = document.createElement("span");
-          dayEl.className = "date-day";
-          dayEl.textContent = cd.day;
-
-          const sideEl = document.createElement("span");
-          sideEl.className = "date-side";
-          const monthEl = document.createElement("span");
-          monthEl.className = "date-month";
-          monthEl.textContent = cd.month;
-          const subEl = document.createElement("span");
-          subEl.className = "date-sub";
-          subEl.textContent = cd.year + " — " + cd.wday;
-          sideEl.appendChild(monthEl);
-          sideEl.appendChild(subEl);
-
-          dateTag.appendChild(dayEl);
-          dateTag.appendChild(sideEl);
-        } else {
-          dateTag.textContent = obento.date; // 日付が読み取れないときはそのまま表示
-        }
-
-        const comment = document.createElement("p");
-        comment.className = "obento-comment";
-        comment.textContent = obento.comment;
-
-        card.appendChild(img);
-        card.appendChild(dateTag);
-        card.appendChild(comment);
-        area.appendChild(card);
+    // 日付 → 記録 の対応表を作る
+    const byDate = {};
+    let minMonth = null, maxMonth = null; // 「年×12＋月」で月を数える
+    if (typeof obentoList !== "undefined") {
+      for (const o of obentoList) {
+        const key = normalizeKey(o.date);
+        if (!key) continue;
+        byDate[key] = o;
+        const y = Number(key.slice(0, 4)), m = Number(key.slice(5, 7));
+        const idx = y * 12 + (m - 1);
+        if (minMonth === null || idx < minMonth) minMonth = idx;
+        if (maxMonth === null || idx > maxMonth) maxMonth = idx;
       }
     }
+
+    // 今月もカレンダーを見られるようにしておく
+    const today = new Date();
+    const todayIdx = today.getFullYear() * 12 + today.getMonth();
+    if (minMonth === null) minMonth = todayIdx;
+    if (maxMonth === null) maxMonth = todayIdx;
+    if (todayIdx > maxMonth) maxMonth = todayIdx;
+
+    // 最初に表示する月（記録のある一番新しい月）
+    let viewIdx = Math.min(maxMonth, todayIdx);
+
+    const grid = document.getElementById("calendar");
+    const emptyMsg = document.getElementById("cal-empty");
+    const prevBtn = document.getElementById("prev-month");
+    const nextBtn = document.getElementById("next-month");
+
+    function render() {
+      const y = Math.floor(viewIdx / 12);
+      const m = (viewIdx % 12) + 1; // 1〜12
+
+      document.getElementById("cal-month").textContent = MONTHS_EN[m - 1];
+      document.getElementById("cal-year").textContent = y;
+      prevBtn.disabled = viewIdx <= minMonth;
+      nextBtn.disabled = viewIdx >= maxMonth;
+
+      grid.innerHTML = "";
+
+      // 曜日の見出し
+      for (const wd of WDAYS_EN) {
+        const el = document.createElement("div");
+        el.className = "cal-wd";
+        el.textContent = wd;
+        grid.appendChild(el);
+      }
+
+      const firstWd = new Date(y, m - 1, 1).getDay();
+      const daysInMonth = new Date(y, m, 0).getDate();
+
+      // 1日より前の空きマス
+      for (let i = 0; i < firstWd; i++) {
+        const el = document.createElement("div");
+        el.className = "cal-cell blank";
+        grid.appendChild(el);
+      }
+
+      let count = 0;
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement("div");
+        cell.className = "cal-cell";
+
+        const key = y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+        const entry = byDate[key];
+
+        if (today.getFullYear() === y && today.getMonth() === m - 1 && today.getDate() === d) {
+          cell.classList.add("today");
+        }
+
+        const num = document.createElement("span");
+        num.className = "cal-daynum";
+        num.textContent = d;
+        cell.appendChild(num);
+
+        if (entry) {
+          count++;
+          cell.classList.add("has-photo");
+          const img = document.createElement("img");
+          img.className = "cal-photo";
+          img.src = entry.photo;
+          img.alt = nihongoDate(y, m, d) + "のお弁当";
+          img.loading = "lazy";
+          img.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
+          cell.appendChild(img);
+          cell.addEventListener("click", function () { openModal(entry, y, m, d); });
+          cell.setAttribute("role", "button");
+          cell.tabIndex = 0;
+          cell.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(entry, y, m, d); }
+          });
+        }
+
+        grid.appendChild(cell);
+      }
+
+      emptyMsg.hidden = count > 0;
+    }
+
+    prevBtn.addEventListener("click", function () { if (viewIdx > minMonth) { viewIdx--; render(); } });
+    nextBtn.addEventListener("click", function () { if (viewIdx < maxMonth) { viewIdx++; render(); } });
+
+    // ---------- 写真の拡大表示 ----------
+    const modal = document.getElementById("photo-modal");
+    const modalImg = document.getElementById("modal-img");
+
+    function openModal(entry, y, m, d) {
+      modalImg.src = entry.photo;
+      modalImg.alt = nihongoDate(y, m, d) + "のお弁当";
+      modalImg.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
+      document.getElementById("modal-date-en").textContent = cafeDate(y, m, d);
+      document.getElementById("modal-date-ja").textContent = nihongoDate(y, m, d);
+      document.getElementById("modal-comment").textContent = entry.comment || "";
+      modal.hidden = false;
+      document.body.style.overflow = "hidden"; // 後ろのページが動かないように
+    }
+
+    function closeModal() {
+      modal.hidden = true;
+      modalImg.src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.getElementById("modal-close").addEventListener("click", closeModal);
+    document.getElementById("modal-backdrop").addEventListener("click", closeModal);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !modal.hidden) closeModal();
+    });
+
+    render();
   </script>
 </body>
 </html>
