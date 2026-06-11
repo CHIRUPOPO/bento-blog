@@ -30,47 +30,68 @@ body {
   line-height: 1.8;
 }
 
-/* ---------- ヘッダー（白ベースにラベンダーとグリーンのライン） ---------- */
+/* ---------- ヘッダー（カフェ風パンケーキ写真 × ラベンダーの大人かっこいい雰囲気） ----------
+   写真はUnsplash（無料・商用利用可・クレジット不要のライセンス）から読み込んでいます。
+   自分の写真に変えたいときは、images フォルダに header.jpg という名前で
+   横長の写真をアップロードするだけで、自動でそちらが優先されます。 */
 
 .site-header {
-  background: #ffffff;
-  padding: 48px 16px 36px;
+  background-image:
+    linear-gradient(rgba(56, 46, 84, 0.62), rgba(56, 46, 84, 0.38)),
+    url("images/header.jpg"),
+    url("https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?auto=format&fit=crop&w=1600&q=70");
+  background-size: cover, cover, cover;
+  background-position: center;
+  background-color: #4a4070; /* 写真が読み込めないときの予備の色 */
+  padding: 84px 16px 76px;
   text-align: center;
-  border-top: 6px solid var(--lavender);
-  border-bottom: 1px solid #eceaf2;
-  position: relative;
-}
-
-/* ヘッダー下にそっと草色のステッチ */
-.site-header::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -1px;
-  transform: translateX(-50%);
-  width: 140px;
-  height: 3px;
-  border-radius: 3px;
-  background: linear-gradient(90deg, var(--green) 0 33%, var(--lavender) 33% 66%, var(--green) 66%);
+  border-bottom: 4px solid var(--lavender);
 }
 
 .header-inner {
   display: inline-block;
 }
 
+.site-eyebrow {
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.45em;
+  text-indent: 0.45em; /* 字間ぶんのズレを中央に戻す */
+  text-shadow: 0 1px 8px rgba(40, 32, 62, 0.6);
+}
+
 .site-title {
   font-family: "Kiwi Maru", "Zen Maru Gothic", sans-serif;
-  font-size: 1.65rem;
+  font-size: 2rem;
+  font-weight: 500;
   margin: 0;
-  color: var(--lavender-deep);
-  letter-spacing: 0.08em;
+  color: #ffffff;
+  letter-spacing: 0.14em;
+  text-shadow: 0 2px 14px rgba(40, 32, 62, 0.65);
 }
 
 .site-subtitle {
-  margin: 8px 0 0;
-  font-size: 0.92rem;
-  color: var(--gray-soft);
-  letter-spacing: 0.06em;
+  margin: 14px 0 0;
+  padding-top: 14px;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.92);
+  letter-spacing: 0.12em;
+  text-shadow: 0 1px 8px rgba(40, 32, 62, 0.6);
+  position: relative;
+}
+
+/* サブタイトルの上の細い飾り線 */
+.site-subtitle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 56px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.7);
 }
 
 /* ---------- お弁当カードの一覧 ---------- */
