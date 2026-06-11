@@ -1,0 +1,163 @@
+/* =========================================
+   むすめのおべんとう記録 デザイン
+   （このファイルはさわらなくて大丈夫です）
+   ========================================= */
+
+:root {
+  --white: #fdfdfb;
+  --lavender-pale: #f3f0fa;
+  --lavender: #c9bce4;
+  --lavender-deep: #8d7bb8;
+  --green-pale: #eef4ea;
+  --green: #a8c8a0;
+  --green-deep: #6f9468;
+  --gray-text: #5a5560;
+  --gray-soft: #948f9e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: var(--white);
+  /* ごくうっすらとしたラベンダーの水玉 */
+  background-image: radial-gradient(rgba(201, 188, 228, 0.18) 10%, transparent 11%);
+  background-size: 44px 44px;
+  color: var(--gray-text);
+  font-family: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", sans-serif;
+  line-height: 1.8;
+}
+
+/* ---------- ヘッダー（白ベースにラベンダーとグリーンのライン） ---------- */
+
+.site-header {
+  background: #ffffff;
+  padding: 48px 16px 36px;
+  text-align: center;
+  border-top: 6px solid var(--lavender);
+  border-bottom: 1px solid #eceaf2;
+  position: relative;
+}
+
+/* ヘッダー下にそっと草色のステッチ */
+.site-header::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 3px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--green) 0 33%, var(--lavender) 33% 66%, var(--green) 66%);
+}
+
+.header-inner {
+  display: inline-block;
+}
+
+.site-title {
+  font-family: "Kiwi Maru", "Zen Maru Gothic", sans-serif;
+  font-size: 1.65rem;
+  margin: 0;
+  color: var(--lavender-deep);
+  letter-spacing: 0.08em;
+}
+
+.site-subtitle {
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+  color: var(--gray-soft);
+  letter-spacing: 0.06em;
+}
+
+/* ---------- お弁当カードの一覧 ---------- */
+
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 40px 16px 24px;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.obento-card {
+  background: #ffffff;
+  border: 1px solid #e9e5f1;
+  border-radius: 20px;
+  padding: 20px 20px 24px;
+  box-shadow: 0 8px 24px rgba(141, 123, 184, 0.10);
+  position: relative;
+}
+
+/* カードの上にそっと小さな飾り */
+.obento-card::before {
+  content: "🌿";
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.1rem;
+  background: var(--white);
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid #e9e5f1;
+}
+
+.obento-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  border: 1px solid #eceaf2;
+  background: var(--lavender-pale);
+}
+
+.obento-date {
+  display: inline-block;
+  margin: 18px 0 4px;
+  background: var(--green-pale);
+  color: var(--green-deep);
+  font-weight: 700;
+  font-size: 0.92rem;
+  padding: 3px 18px;
+  border-radius: 999px;
+  border: 1px solid #d9e6d3;
+  letter-spacing: 0.05em;
+}
+
+.obento-comment {
+  margin: 10px 4px 0;
+  font-size: 1.02rem;
+}
+
+.empty-message {
+  text-align: center;
+  color: var(--gray-soft);
+}
+
+/* ---------- フッター ---------- */
+
+.site-footer {
+  text-align: center;
+  padding: 24px 16px 40px;
+  color: var(--gray-soft);
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+}
+
+/* ---------- スマホで見たとき ---------- */
+
+@media (max-width: 480px) {
+  .site-title {
+    font-size: 1.25rem;
+  }
+}

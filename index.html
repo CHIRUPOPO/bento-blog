@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>むすめのおべんとう記録 🍱</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <h1 class="site-title">🍱 むすめのおべんとう記録 🍙</h1>
+      <p class="site-subtitle">まいにちのお弁当を、すこしずつ。</p>
+    </div>
+  </header>
+
+  <main>
+    <div id="obento-area" class="card-list">
+      <!-- お弁当の記録はここに自動で表示されます（obento.js を編集してください） -->
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>きょうも おいしく たべてくれますように 🌷</p>
+  </footer>
+
+  <!-- お弁当のデータを読み込みます -->
+  <script src="obento.js"></script>
+  <script>
+    // ▼▼ ここから下はプログラムです。さわらなくて大丈夫です ▼▼
+
+    // 日付（例: "2026-06-11"）を「2026年6月11日（木）」の形にする
+    function nihongoDate(dateText) {
+      const d = new Date(dateText + "T00:00:00");
+      if (isNaN(d)) return dateText; // 読み取れない場合はそのまま表示
+      const youbi = ["日", "月", "火", "水", "木", "金", "土"][d.getDay()];
+      return d.getFullYear() + "年" + (d.getMonth() + 1) + "月" + d.getDate() + "日（" + youbi + "）";
+    }
+
+    const area = document.getElementById("obento-area");
+
+    if (typeof obentoList === "undefined" || obentoList.length === 0) {
+      area.innerHTML = '<p class="empty-message">まだ記録がありません。obento.js にお弁当を追加してね 🍳</p>';
+    } else {
+      // 新しい日付が上に来るように並べかえる
+      const sorted = obentoList.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+
+      for (const obento of sorted) {
+        const card = document.createElement("article");
+        card.className = "obento-card";
+
+        const img = document.createElement("img");
+        img.className = "obento-photo";
+        img.src = obento.photo;
+        img.alt = nihongoDate(obento.date) + "のお弁当";
+        img.loading = "lazy";
+        // 写真が見つからないときは、かわいいおにぎりの絵を出す
+        img.onerror = function () {
+          this.onerror = null;
+          this.src = "images/placeholder.svg";
+        };
+
+        const dateTag = document.createElement("p");
+        dateTag.className = "obento-date";
+        dateTag.textContent = "📅 " + nihongoDate(obento.date);
+
+        const comment = document.createElement("p");
+        comment.className = "obento-comment";
+        comment.textContent = obento.comment;
+
+        card.appendChild(img);
+        card.appendChild(dateTag);
+        card.appendChild(comment);
+        area.appendChild(card);
+      }
+    }
+  </script>
+</body>
+</html>
