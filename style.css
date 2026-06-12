@@ -97,6 +97,22 @@ body {
   background: rgba(255, 255, 255, 0.7);
 }
 
+/* ヘッダー内の健康ノートへのリンク */
+.site-applink {
+  margin: 16px 0 0;
+  font-size: 0.82rem;
+}
+.site-applink a {
+  color: var(--lavender);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--lavender);
+  padding-bottom: 2px;
+}
+.site-applink a:hover {
+  color: #fff;
+  border-bottom-color: #fff;
+}
+
 /* ---------- カレンダー（ヘッダーに合わせた濃いラベンダーのパネル） ---------- */
 
 main {
