@@ -100,57 +100,47 @@ body {
 /* ---------- プロフィールカード ---------- */
 
 .profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   background: #ffffff;
   border: 1px solid #e9e5f1;
-  border-radius: 22px;
-  box-shadow: 0 8px 24px rgba(141, 123, 184, 0.10);
-  padding: 30px 24px 28px;
-  margin-bottom: 40px;
-  text-align: center;
+  border-radius: 18px;
+  box-shadow: 0 6px 18px rgba(141, 123, 184, 0.08);
+  padding: 14px 18px;
+  margin-bottom: 30px;
 }
 
 .profile-icon {
-  width: 120px;
-  height: 120px;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid var(--lavender-pale);
-  box-shadow: 0 4px 14px rgba(141, 123, 184, 0.25);
-  margin-top: -64px; /* ヘッダーに少し重ねておしゃれに */
+  border: 2px solid var(--lavender-pale);
   background: #fff;
 }
 
 .profile-name {
-  margin: 14px 0 0;
+  margin: 0 0 4px;
   font-family: "Playfair Display", serif;
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  letter-spacing: 0.35em;
-  text-indent: 0.35em;
+  letter-spacing: 0.25em;
   color: var(--lavender-deep);
 }
 
 .profile-leaf {
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   letter-spacing: normal;
 }
 
 .profile-text {
-  margin-top: 14px;
-  padding-top: 16px;
-  border-top: 1px dotted #ddd7ea;
-}
-
-.profile-text p {
-  margin: 0 0 14px;
-  font-size: 0.93rem;
-  line-height: 2;
-  letter-spacing: 0.05em;
-  color: var(--gray-text);
-}
-
-.profile-text p:last-child {
-  margin-bottom: 0;
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.9;
+  letter-spacing: 0.03em;
+  color: var(--gray-soft);
 }
 
 /* ---------- カレンダー（ヘッダーに合わせた濃いラベンダーのパネル） ---------- */
