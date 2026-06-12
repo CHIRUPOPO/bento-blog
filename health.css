@@ -47,16 +47,6 @@ body {
 }
 .hk-title { margin: 0; font-size: 1.7rem; font-weight: 700; letter-spacing: 0.1em; }
 .hk-subtitle { margin: 8px 0 0; font-size: 0.85rem; color: #d9d3ea; }
-.hk-backlink {
-  display: inline-block;
-  margin-top: 14px;
-  color: var(--lavender);
-  font-size: 0.82rem;
-  text-decoration: none;
-  border-bottom: 1px dotted var(--lavender);
-}
-.hk-backlink:hover { color: #fff; }
-
 /* ---------- タブ ---------- */
 .hk-tabs {
   position: sticky;

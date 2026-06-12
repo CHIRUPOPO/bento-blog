@@ -1,0 +1,15 @@
+{
+  "name": "カロリーノート",
+  "short_name": "カロリーノート",
+  "description": "写真でカロリー・塩分・野菜量・果物量をかんたん記録できる健康ノート",
+  "start_url": "./health.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fdfdfb",
+  "theme_color": "#393052",
+  "lang": "ja",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

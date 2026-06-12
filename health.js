@@ -756,4 +756,9 @@
   renderItems();
   renderBodyTab();
   renderGoal();
+
+  /* オフラインでも開けるように（ホーム画面に追加するとアプリのように使えます） */
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(() => {});
+  }
 })();
