@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>カロリーノート</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#393052">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="カロリーノート">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Zen+Old+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="health.css">
+</head>
+<body>
+
+  <header class="hk-header">
+    <p class="hk-eyebrow">CALORIE NOTE</p>
+    <h1 class="hk-title">カロリーノート</h1>
+    <p class="hk-subtitle">写真でカロリー・塩分・野菜量をかんたん記録</p>
+  </header>
+
+  <nav class="hk-tabs" role="tablist">
+    <button class="hk-tab active" data-tab="today">きょう</button>
+    <button class="hk-tab" data-tab="meal">食事きろく</button>
+    <button class="hk-tab" data-tab="body">からだ</button>
+    <button class="hk-tab" data-tab="goal">もくひょう</button>
+    <button class="hk-tab" data-tab="settings">せってい</button>
+  </nav>
+
+  <main class="hk-main">
+
+    <!-- ============ きょう（ダッシュボード） ============ -->
+    <section id="tab-today" class="hk-panel active">
+      <div class="hk-date-row">
+        <button id="today-prev" class="hk-mini-btn" aria-label="前の日">‹</button>
+        <input type="date" id="today-date" class="hk-date">
+        <button id="today-next" class="hk-mini-btn" aria-label="次の日">›</button>
+      </div>
+
+      <div id="today-no-profile" class="hk-note" hidden>
+        まずは「もくひょう」タブでプロフィールを設定すると、あなたに合った目標値が表示されます。
+      </div>
+
+      <div id="today-cards" class="hk-cards"></div>
+
+      <h2 class="hk-h2">きょうの食事</h2>
+      <div id="today-meals" class="hk-meal-summary"></div>
+
+      <h2 class="hk-h2">きょうのからだ</h2>
+      <div id="today-body" class="hk-body-summary"></div>
+    </section>
+
+    <!-- ============ 食事きろく ============ -->
+    <section id="tab-meal" class="hk-panel">
+      <div class="hk-row">
+        <input type="date" id="meal-date" class="hk-date">
+        <select id="meal-type" class="hk-select">
+          <option value="breakfast">朝食</option>
+          <option value="lunch">昼食（お弁当）</option>
+          <option value="dinner">夕食</option>
+          <option value="snack">間食</option>
+        </select>
+      </div>
+
+      <!-- 写真解析（無料・コピペ方式） -->
+      <div class="hk-photo-box">
+        <p class="hk-photo-title">📷 写真からAIで自動入力（無料・コピペ方式）</p>
+        <p class="hk-photo-desc">無料のAIチャット（claude.ai・Gemini・ChatGPTなど）を使って、写真から食材リストを取り込めます。APIキーは不要です。</p>
+        <ol class="hk-steps">
+          <li>下のボタンで「お願い文」をコピーする</li>
+          <li>AIチャットアプリを開き、<strong>食事の写真を添付</strong>して、お願い文を貼り付けて送る</li>
+          <li>AIの返事をぜんぶコピーして、下の欄に貼り付けて「取り込む」を押す</li>
+        </ol>
+        <button id="copy-prompt-btn" class="hk-btn hk-btn-main">① お願い文をコピーする</button>
+        <p id="copy-status" class="hk-status"></p>
+        <textarea id="paste-area" class="hk-textarea" rows="4" placeholder="③ AIの返事をここに貼り付けてください"></textarea>
+        <button id="paste-import-btn" class="hk-btn hk-btn-main">③ 貼り付けた結果を取り込む</button>
+        <p id="paste-status" class="hk-status"></p>
+        <p id="paste-note" class="hk-ai-note" hidden></p>
+      </div>
+
+      <!-- 写真解析（APIキー・自動） -->
+      <div class="hk-photo-box">
+        <p class="hk-photo-title">⚡ ボタン1つで自動解析（APIキー設定が必要・有料）</p>
+        <p class="hk-photo-desc">「せってい」タブでAPIキーを設定すると、写真を選ぶだけで解析できます（1回あたり数円〜十数円）。<br>
+        どちらの方法でも、隠れている食材や量はあくまで「予想」なので、表で確認して直してください。</p>
+        <input type="file" id="photo-input" accept="image/*">
+        <img id="photo-preview" class="hk-photo-preview" hidden alt="選んだ写真">
+        <button id="analyze-btn" class="hk-btn hk-btn-main" disabled>この写真を解析する</button>
+        <p id="analyze-status" class="hk-status"></p>
+        <p id="analyze-note" class="hk-ai-note" hidden></p>
+      </div>
+
+      <!-- 食材リスト -->
+      <h2 class="hk-h2">食べたものリスト</h2>
+      <div class="hk-table-wrap">
+        <table class="hk-table" id="items-table">
+          <thead>
+            <tr><th>食材・料理</th><th>量(g)</th><th>kcal</th><th>塩分(g)</th><th></th></tr>
+          </thead>
+          <tbody id="items-body"></tbody>
+          <tfoot>
+            <tr id="items-total-row">
+              <th>合計</th><th id="t-grams">0g</th><th id="t-kcal">0</th><th id="t-salt">0</th><th></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <p id="items-empty" class="hk-empty">まだ何も入っていません。写真を解析するか、下から食品を追加してください。</p>
+      <div id="items-sub" class="hk-sub-totals"></div>
+
+      <!-- 食品追加 -->
+      <div class="hk-add-box">
+        <p class="hk-photo-title">🔍 食品をさがして追加</p>
+        <input type="text" id="food-search" class="hk-input" placeholder="例：からあげ、ごはん、りんご…">
+        <div id="food-results" class="hk-food-results"></div>
+        <button id="add-custom" class="hk-btn">＋ 自由入力で追加（数値はあとで編集）</button>
+      </div>
+    </section>
+
+    <!-- ============ からだ ============ -->
+    <section id="tab-body" class="hk-panel">
+      <div class="hk-row">
+        <input type="date" id="body-date" class="hk-date">
+      </div>
+      <div class="hk-form-grid">
+        <label>体重 (kg)<input type="number" step="0.1" min="0" id="body-weight" class="hk-input"></label>
+        <label>睡眠時間 (時間)<input type="number" step="0.5" min="0" max="24" id="body-sleep" class="hk-input"></label>
+        <label>歩数 (歩)<input type="number" step="100" min="0" id="body-steps" class="hk-input"></label>
+        <label>水分 (mL)<input type="number" step="50" min="0" id="body-water" class="hk-input"></label>
+        <label class="hk-span2">メモ（体調・お通じ・運動など）<input type="text" id="body-memo" class="hk-input"></label>
+      </div>
+      <p class="hk-status" id="body-saved"></p>
+
+      <h2 class="hk-h2">体重のうつりかわり</h2>
+      <div id="weight-chart" class="hk-chart"></div>
+
+      <h2 class="hk-h2">睡眠時間（最近2週間）</h2>
+      <div id="sleep-chart" class="hk-chart"></div>
+    </section>
+
+    <!-- ============ もくひょう ============ -->
+    <section id="tab-goal" class="hk-panel">
+      <h2 class="hk-h2">プロフィール</h2>
+      <div class="hk-form-grid">
+        <label>性別
+          <select id="p-sex" class="hk-select">
+            <option value="female">女性</option>
+            <option value="male">男性</option>
+          </select>
+        </label>
+        <label>年齢<input type="number" id="p-age" class="hk-input" min="6" max="100"></label>
+        <label>身長 (cm)<input type="number" id="p-height" class="hk-input" step="0.1" min="100" max="220"></label>
+        <label>いまの体重 (kg)<input type="number" id="p-weight" class="hk-input" step="0.1" min="20" max="200"></label>
+        <label>目標体重 (kg)<input type="number" id="p-target" class="hk-input" step="0.1" min="20" max="200"></label>
+        <label>目標の日付<input type="date" id="p-date" class="hk-input"></label>
+        <label class="hk-span2">活動量
+          <select id="p-activity" class="hk-select">
+            <option value="1.2">低い（デスクワーク中心・運動ほぼなし）</option>
+            <option value="1.375">やや低い（軽い運動を週1〜3回）</option>
+            <option value="1.55" selected>ふつう（立ち仕事や運動を週3〜5回）</option>
+            <option value="1.725">高い（激しい運動を週6〜7回）</option>
+          </select>
+        </label>
+      </div>
+      <button id="p-save" class="hk-btn hk-btn-main">保存して目標を計算する</button>
+      <p class="hk-status" id="p-status"></p>
+
+      <div id="goal-result" hidden>
+        <h2 class="hk-h2">あなたの1日の目標</h2>
+        <div id="goal-cards" class="hk-cards"></div>
+        <p id="goal-warning" class="hk-warning" hidden></p>
+        <p class="hk-note">※ 目標値は厚生労働省「日本人の食事摂取基準」などをもとにした目安です。体調に不安があるときは医師・管理栄養士に相談してください。</p>
+      </div>
+    </section>
+
+    <!-- ============ せってい ============ -->
+    <section id="tab-settings" class="hk-panel">
+      <h2 class="hk-h2">写真解析（AI）の設定</h2>
+      <p class="hk-note">
+        写真の解析には Anthropic（Claude）のAPIキーが必要です。
+        キーは <a href="https://platform.claude.com/" target="_blank" rel="noopener">platform.claude.com</a> で取得でき、
+        この端末のブラウザの中だけに保存されます（どこにも送信されるのはAnthropicのAPIだけです）。
+        解析1回あたり数円〜十数円ほどの利用料がかかります。
+        キーがなくても、食品データベースからの手動入力はすべて無料で使えます。
+      </p>
+      <label class="hk-label">APIキー
+        <input type="password" id="api-key" class="hk-input" placeholder="sk-ant-…">
+      </label>
+      <button id="api-save" class="hk-btn hk-btn-main">保存する</button>
+      <p class="hk-status" id="api-status"></p>
+
+      <h2 class="hk-h2">データのバックアップ</h2>
+      <p class="hk-note">記録はこの端末のブラウザの中（localStorage）に保存されています。機種変更や別の端末に移すときは、ここで書き出し・読み込みができます。</p>
+      <div class="hk-row">
+        <button id="export-btn" class="hk-btn">📤 データを書き出す</button>
+        <label class="hk-btn hk-btn-file">📥 データを読み込む<input type="file" id="import-input" accept=".json" hidden></label>
+      </div>
+      <p class="hk-status" id="backup-status"></p>
+
+      <h2 class="hk-h2">ぜんぶ消す</h2>
+      <button id="reset-btn" class="hk-btn hk-btn-danger">記録をすべて削除する</button>
+    </section>
+
+  </main>
+
+  <footer class="hk-footer">
+    <p>きょうも おいしく けんこうに</p>
+  </footer>
+
+  <script src="foods.js"></script>
+  <script src="health.js"></script>
+</body>
+</html>
