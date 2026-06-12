@@ -97,6 +97,62 @@ body {
   background: rgba(255, 255, 255, 0.7);
 }
 
+/* ---------- プロフィールカード ---------- */
+
+.profile {
+  background: #ffffff;
+  border: 1px solid #e9e5f1;
+  border-radius: 22px;
+  box-shadow: 0 8px 24px rgba(141, 123, 184, 0.10);
+  padding: 30px 24px 28px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.profile-icon {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--lavender-pale);
+  box-shadow: 0 4px 14px rgba(141, 123, 184, 0.25);
+  margin-top: -64px; /* ヘッダーに少し重ねておしゃれに */
+  background: #fff;
+}
+
+.profile-name {
+  margin: 14px 0 0;
+  font-family: "Playfair Display", serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-indent: 0.35em;
+  color: var(--lavender-deep);
+}
+
+.profile-leaf {
+  font-size: 0.9rem;
+  letter-spacing: normal;
+}
+
+.profile-text {
+  margin-top: 14px;
+  padding-top: 16px;
+  border-top: 1px dotted #ddd7ea;
+}
+
+.profile-text p {
+  margin: 0 0 14px;
+  font-size: 0.93rem;
+  line-height: 2;
+  letter-spacing: 0.05em;
+  color: var(--gray-text);
+}
+
+.profile-text p:last-child {
+  margin-bottom: 0;
+}
+
 /* ---------- カレンダー（ヘッダーに合わせた濃いラベンダーのパネル） ---------- */
 
 main {
