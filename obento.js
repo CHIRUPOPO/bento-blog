@@ -280,4 +280,6 @@ const oyasumiList = [
 
   { date: "2026-05-28", note: "自宅学習日" },
 
+  { date: "2026-04-24", note: "移動教室" },
+
 ];
