@@ -61,11 +61,28 @@
         </select>
       </div>
 
-      <!-- 写真解析 -->
+      <!-- 写真解析（無料・コピペ方式） -->
       <div class="hk-photo-box">
-        <p class="hk-photo-title">📷 写真からAIで自動入力</p>
-        <p class="hk-photo-desc">食事の写真を選ぶと、写っている食材とおおよそのグラム数をAIが推定して下の表に入れます。<br>
-        隠れている食材や量はあくまで「予想」なので、表で確認して直してください。</p>
+        <p class="hk-photo-title">📷 写真からAIで自動入力（無料・コピペ方式）</p>
+        <p class="hk-photo-desc">無料のAIチャット（claude.ai・Gemini・ChatGPTなど）を使って、写真から食材リストを取り込めます。APIキーは不要です。</p>
+        <ol class="hk-steps">
+          <li>下のボタンで「お願い文」をコピーする</li>
+          <li>AIチャットアプリを開き、<strong>食事の写真を添付</strong>して、お願い文を貼り付けて送る</li>
+          <li>AIの返事をぜんぶコピーして、下の欄に貼り付けて「取り込む」を押す</li>
+        </ol>
+        <button id="copy-prompt-btn" class="hk-btn hk-btn-main">① お願い文をコピーする</button>
+        <p id="copy-status" class="hk-status"></p>
+        <textarea id="paste-area" class="hk-textarea" rows="4" placeholder="③ AIの返事をここに貼り付けてください"></textarea>
+        <button id="paste-import-btn" class="hk-btn hk-btn-main">③ 貼り付けた結果を取り込む</button>
+        <p id="paste-status" class="hk-status"></p>
+        <p id="paste-note" class="hk-ai-note" hidden></p>
+      </div>
+
+      <!-- 写真解析（APIキー・自動） -->
+      <div class="hk-photo-box">
+        <p class="hk-photo-title">⚡ ボタン1つで自動解析（APIキー設定が必要・有料）</p>
+        <p class="hk-photo-desc">「せってい」タブでAPIキーを設定すると、写真を選ぶだけで解析できます（1回あたり数円〜十数円）。<br>
+        どちらの方法でも、隠れている食材や量はあくまで「予想」なので、表で確認して直してください。</p>
         <input type="file" id="photo-input" accept="image/*">
         <img id="photo-preview" class="hk-photo-preview" hidden alt="選んだ写真">
         <button id="analyze-btn" class="hk-btn hk-btn-main" disabled>この写真を解析する</button>

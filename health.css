@@ -201,6 +201,26 @@ label { font-size: 0.85rem; }
   padding: 8px 12px;
 }
 
+/* 無料コピペ方式の手順と貼り付け欄 */
+.hk-steps {
+  font-size: 0.85rem;
+  margin: 0 0 6px;
+  padding-left: 22px;
+}
+.hk-steps li { margin-bottom: 2px; }
+.hk-textarea {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  font-family: inherit;
+  font-size: 0.88rem;
+  color: var(--gray-text);
+  padding: 8px 10px;
+  border: 1px solid var(--lavender);
+  border-radius: 8px;
+  resize: vertical;
+}
+
 /* ---------- 食材テーブル ---------- */
 .hk-table-wrap { overflow-x: auto; }
 .hk-table {

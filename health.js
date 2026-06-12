@@ -414,6 +414,99 @@
     "veg_ratio はその料理の重量のうち野菜（いも類を除く）が占める割合、fruit_ratio は果物の割合です。" +
     "調味料・揚げ衣・たれは料理の栄養価に含めてください。";
 
+  // 無料コピペ方式用：AIチャットに貼り付ける「お願い文」
+  const PASTE_PROMPT =
+    "この食事の写真を見て、写っている食材・料理をすべて挙げてください。\n" +
+    "ごはんの下や容器のかげに隠れていそうな食材も、confidence を \"low\" にして含めてください。\n" +
+    "それぞれのおおよその重さ（グラム）と、100gあたりの栄養価を日本食品標準成分表の知識をもとに推定し、\n" +
+    "次のJSON形式【だけ】で答えてください（前後の説明文は不要です）。\n\n" +
+    "{\"items\":[{\"name\":\"食材・料理名（日本語）\",\"grams\":おおよその重さ,\"kcal_per_100g\":数値,\"protein_per_100g\":数値,\"fat_per_100g\":数値,\"carbs_per_100g\":数値,\"salt_per_100g\":食塩相当量の数値,\"veg_ratio\":重量のうち野菜の割合0〜1,\"fruit_ratio\":果物の割合0〜1,\"confidence\":\"high か medium か low\"}],\"note\":\"隠れていそうな食材や推定の注意点（日本語で1〜2文）\"}\n\n" +
+    "注意：veg_ratio の野菜にいも類は含めません。調味料・揚げ衣・たれは料理の栄養価に含めてください。";
+
+  /* AIの解析結果（items / note）をリストに取り込む共通処理 */
+  function addAnalyzedItems(data, statusTarget, noteTarget) {
+    if (!data || !Array.isArray(data.items) || !data.items.length) {
+      throw new Error("食材のリストが見つかりませんでした。");
+    }
+    const items = currentItems();
+    let count = 0;
+    for (const it of data.items) {
+      if (!it || !it.name) continue;
+      items.push({
+        name: String(it.name),
+        grams: Math.max(0, Math.round(Number(it.grams) || 0)),
+        per: {
+          kcal: Number(it.kcal_per_100g) || 0,
+          p: Number(it.protein_per_100g) || 0,
+          f: Number(it.fat_per_100g) || 0,
+          c: Number(it.carbs_per_100g) || 0,
+          salt: Number(it.salt_per_100g) || 0,
+        },
+        veg: Math.min(1, Math.max(0, Number(it.veg_ratio) || 0)),
+        fruit: Math.min(1, Math.max(0, Number(it.fruit_ratio) || 0)),
+        conf: ["high", "medium", "low"].includes(it.confidence) ? it.confidence : undefined,
+      });
+      count++;
+    }
+    if (!count) throw new Error("取り込める食材がありませんでした。");
+    saveMeals();
+    renderItems();
+    statusTarget.textContent = count + " 件の食材を追加しました。量や名前を確認して直してください。";
+    if (noteTarget && data.note) {
+      noteTarget.textContent = "💡 AIからのメモ：" + data.note;
+      noteTarget.hidden = false;
+    }
+    return count;
+  }
+
+  /* ---------- 無料コピペ方式 ---------- */
+  const copyStatusEl = document.getElementById("copy-status");
+  document.getElementById("copy-prompt-btn").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(PASTE_PROMPT);
+      copyStatusEl.textContent = "コピーしました ✓ AIチャットアプリに写真と一緒に貼り付けてください。";
+    } catch (e) {
+      // クリップボードが使えない環境では、選択できる形で表示する
+      const ta = document.createElement("textarea");
+      ta.value = PASTE_PROMPT;
+      ta.style.width = "100%"; ta.rows = 6;
+      copyStatusEl.textContent = "自動コピーできなかったので、下の文を長押し（または全選択）してコピーしてください。";
+      copyStatusEl.after(ta);
+      ta.select();
+    }
+  });
+
+  // AIの返事からJSON部分を取り出す（コードブロックや前後の説明文が混ざっていてもOK）
+  function parseAiReply(text) {
+    let t = String(text).replace(/```[a-z]*/gi, "");
+    const start = t.indexOf("{");
+    const end = t.lastIndexOf("}");
+    if (start === -1 || end === -1 || end <= start) {
+      throw new Error("JSONが見つかりませんでした。AIの返事を最初から最後までコピーして貼り付けてください。");
+    }
+    try {
+      return JSON.parse(t.slice(start, end + 1));
+    } catch (e) {
+      throw new Error("うまく読み取れませんでした。もう一度AIに「JSON形式だけで答えて」と頼んでみてください。");
+    }
+  }
+
+  document.getElementById("paste-import-btn").addEventListener("click", () => {
+    const pasteStatusEl = document.getElementById("paste-status");
+    const pasteArea = document.getElementById("paste-area");
+    if (!pasteArea.value.trim()) {
+      pasteStatusEl.textContent = "先にAIの返事を上の欄に貼り付けてください。";
+      return;
+    }
+    try {
+      const data = parseAiReply(pasteArea.value);
+      addAnalyzedItems(data, pasteStatusEl, document.getElementById("paste-note"));
+      pasteArea.value = "";
+    } catch (e) {
+      pasteStatusEl.textContent = "取り込めませんでした：" + e.message;
+    }
+  });
+
   analyzeBtn.addEventListener("click", async () => {
     const apiKey = load(KEYS.apikey, "");
     if (!apiKey) {
@@ -444,29 +537,7 @@
       }
       const textBlock = response.content.find((b) => b.type === "text");
       if (!textBlock) throw new Error("AIから結果が返ってきませんでした。");
-      const data = JSON.parse(textBlock.text);
-
-      const items = currentItems();
-      for (const it of data.items) {
-        items.push({
-          name: it.name,
-          grams: Math.max(0, Math.round(it.grams)),
-          per: {
-            kcal: it.kcal_per_100g, p: it.protein_per_100g, f: it.fat_per_100g,
-            c: it.carbs_per_100g, salt: it.salt_per_100g,
-          },
-          veg: Math.min(1, Math.max(0, it.veg_ratio)),
-          fruit: Math.min(1, Math.max(0, it.fruit_ratio)),
-          conf: it.confidence,
-        });
-      }
-      saveMeals();
-      renderItems();
-      statusEl.textContent = data.items.length + " 件の食材を追加しました。量や名前を確認して直してください。";
-      if (data.note) {
-        noteEl.textContent = "💡 AIからのメモ：" + data.note;
-        noteEl.hidden = false;
-      }
+      addAnalyzedItems(JSON.parse(textBlock.text), statusEl, noteEl);
     } catch (e) {
       let msg = e && e.message ? e.message : String(e);
       if (e && e.status === 401) msg = "APIキーが正しくないようです。「せってい」タブで確認してください。";
