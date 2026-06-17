@@ -19,6 +19,12 @@
 const obentoList = [
 
   {
+    date: "2026-06-18",
+    photo: "images/2026-06-18.jpg",
+    comment: "",
+  },
+
+  {
     date: "2026-06-16",
     photo: "images/2026-06-16.jpg",
     comment: "",
@@ -287,6 +293,8 @@ const obentoList = [
    ========================================================== */
 
 const oyasumiList = [
+
+  { date: "2026-06-17", note: "午前授業" },
 
   { date: "2026-06-03", note: "台風のため休校" },
 
