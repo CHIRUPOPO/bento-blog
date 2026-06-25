@@ -303,7 +303,7 @@ const obentoList = [
   {
     date: "2026-04-08",
     photo: "images/2026-04-08.jpg",
-    comment: "お弁当初日　お赤飯　筑前煮　卵焼き　フルーツ",
+    comment: "お弁当初日　お赤飯でお祝い✨入学おめでとう✨",
   },
 
 ];
