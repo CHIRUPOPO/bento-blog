@@ -27,7 +27,7 @@ const obentoList = [
   {
     date: "2026-06-24",
     photo: "images/2026-06-24.jpg",
-    comment: "",
+    comment: "娘の大好きなヤンニョムチキン💕岩手県の花巻市のはちみつを加えてとっても美味しくできました✌",
   },
 
   {
