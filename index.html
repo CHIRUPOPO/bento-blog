@@ -53,6 +53,8 @@
   <!-- 写真をクリックしたときに大きく表示する窓 -->
   <div id="photo-modal" class="modal" hidden>
     <div id="modal-backdrop" class="modal-backdrop"></div>
+    <button id="modal-prev" class="modal-arrow modal-prev" aria-label="前のお弁当へ">&#8249;</button>
+    <button id="modal-next" class="modal-arrow modal-next" aria-label="次のお弁当へ">&#8250;</button>
     <figure class="modal-box">
       <button id="modal-close" class="modal-close" aria-label="閉じる">&times;</button>
       <img id="modal-img" class="modal-img" src="" alt="">
@@ -146,6 +148,20 @@
       }
     }
 
+    // お弁当のある日を古い順に一列に並べる（大きい表示で前後にめくるため）
+    // 土日・休校日などお弁当のない日は自然にとばされ、月をまたいでひとつながりになる
+    const sortedDays = Object.keys(byDate).sort().map(function (key) {
+      return {
+        key: key,
+        entry: byDate[key],
+        y: Number(key.slice(0, 4)),
+        m: Number(key.slice(5, 7)),
+        d: Number(key.slice(8, 10)),
+      };
+    });
+    const indexOfKey = {};
+    sortedDays.forEach(function (item, i) { indexOfKey[item.key] = i; });
+
     // 今月もカレンダーを見られるようにしておく
     const today = new Date();
     const todayIdx = today.getFullYear() * 12 + today.getMonth();
@@ -226,11 +242,12 @@
           img.loading = "lazy";
           img.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
           cell.appendChild(img);
-          cell.addEventListener("click", function () { openModal(entry, y, m, d); });
+          const cellIdx = indexOfKey[key];
+          cell.addEventListener("click", function () { openModal(cellIdx); });
           cell.setAttribute("role", "button");
           cell.tabIndex = 0;
           cell.addEventListener("keydown", function (e) {
-            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(entry, y, m, d); }
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openModal(cellIdx); }
           });
         }
 
@@ -243,34 +260,68 @@
     prevBtn.addEventListener("click", function () { if (viewIdx > minMonth) { viewIdx--; render(); } });
     nextBtn.addEventListener("click", function () { if (viewIdx < maxMonth) { viewIdx++; render(); } });
 
-    // ---------- 写真の拡大表示 ----------
+    // ---------- 写真の拡大表示（前後にめくれる） ----------
     const modal = document.getElementById("photo-modal");
     const modalImg = document.getElementById("modal-img");
+    const modalPrev = document.getElementById("modal-prev");
+    const modalNext = document.getElementById("modal-next");
+    let modalIndex = -1; // いま大きく表示しているお弁当が sortedDays の何番目か
 
-    function openModal(entry, y, m, d) {
+    // sortedDays の i 番目のお弁当を大きく表示する
+    function openModal(i) {
+      if (i < 0 || i >= sortedDays.length) return;
+      modalIndex = i;
+      const item = sortedDays[i];
+      const entry = item.entry;
       modalImg.src = entry.photo;
-      modalImg.alt = nihongoDate(y, m, d) + "のお弁当";
+      modalImg.alt = nihongoDate(item.y, item.m, item.d) + "のお弁当";
       modalImg.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
-      document.getElementById("modal-date-en").textContent = cafeDate(y, m, d);
-      document.getElementById("modal-date-ja").textContent = nihongoDate(y, m, d);
+      document.getElementById("modal-date-en").textContent = cafeDate(item.y, item.m, item.d);
+      document.getElementById("modal-date-ja").textContent = nihongoDate(item.y, item.m, item.d);
       const commentEl = document.getElementById("modal-comment");
       commentEl.textContent = entry.comment || "";
-      commentEl.hidden = !entry.comment; // コメントが空の日は欄ごと隠す
+      commentEl.hidden = !entry.comment; // コメント（ひとこと日記）が空の日は欄ごと隠す
+      // 端っこでは矢印を薄くして押せなくする
+      modalPrev.disabled = (i <= 0);
+      modalNext.disabled = (i >= sortedDays.length - 1);
       modal.hidden = false;
       document.body.style.overflow = "hidden"; // 後ろのページが動かないように
     }
 
+    function showPrev() { if (modalIndex > 0) openModal(modalIndex - 1); }
+    function showNext() { if (modalIndex < sortedDays.length - 1) openModal(modalIndex + 1); }
+
     function closeModal() {
       modal.hidden = true;
       modalImg.src = "";
+      modalIndex = -1;
       document.body.style.overflow = "";
     }
 
     document.getElementById("modal-close").addEventListener("click", closeModal);
     document.getElementById("modal-backdrop").addEventListener("click", closeModal);
+    modalPrev.addEventListener("click", showPrev);
+    modalNext.addEventListener("click", showNext);
+
+    // キーボード：← → でめくる、Escで閉じる
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !modal.hidden) closeModal();
+      if (modal.hidden) return;
+      if (e.key === "Escape") closeModal();
+      else if (e.key === "ArrowLeft") showPrev();
+      else if (e.key === "ArrowRight") showNext();
     });
+
+    // スマホ：写真を左右にスワイプしてめくる
+    let touchX = null;
+    modalImg.addEventListener("touchstart", function (e) {
+      touchX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    modalImg.addEventListener("touchend", function (e) {
+      if (touchX === null) return;
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 45) { if (dx < 0) showNext(); else showPrev(); }
+      touchX = null;
+    }, { passive: true });
 
     render();
   </script>

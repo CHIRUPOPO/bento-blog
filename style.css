@@ -391,6 +391,48 @@ main {
   background: rgba(44, 37, 64, 0.95);
 }
 
+/* 前後にめくる矢印（大きい表示の左右） */
+.modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(44, 37, 64, 0.55);
+  color: #fff;
+  font-family: "Playfair Display", serif;
+  font-size: 1.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+}
+
+.modal-arrow:hover:not(:disabled) {
+  background: rgba(44, 37, 64, 0.85);
+}
+
+.modal-arrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+.modal-prev { left: 14px; }
+.modal-next { right: 14px; }
+
+/* スマホでは矢印を少し小さく、写真の端に寄せる */
+@media (max-width: 600px) {
+  .modal-arrow {
+    width: 44px;
+    height: 44px;
+    font-size: 1.6rem;
+  }
+  .modal-prev { left: 6px; }
+  .modal-next { right: 6px; }
+}
+
 .modal-info {
   padding: 18px 22px 24px;
 }
