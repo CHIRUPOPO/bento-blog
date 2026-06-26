@@ -19,6 +19,12 @@
 const obentoList = [
 
   {
+    date: "2026-06-26",
+    photo: "images/2026-06-26.jpg",
+    comment: "パスタが大盛りだと言われたけど、そのまま持たせてしまった💦ごめんね💦",
+  },
+
+  {
     date: "2026-06-25",
     photo: "images/2026-06-25.jpg",
     comment: "なるべくお魚メニューを増やしたいなぁ",
