@@ -599,3 +599,22 @@ main {
   text-align: center;
   color: var(--gray-soft);
 }
+
+/* 写真のない日記の日（フルーツだけ・メモだけ）— タップでコメントが読める */
+.cal-cell.diary-cell {
+  background: rgba(201, 188, 228, 0.14);
+  cursor: pointer;
+}
+
+.cal-cell.diary-cell::after {
+  content: "✎";
+  position: absolute;
+  bottom: 3px;
+  right: 5px;
+  font-size: 0.6rem;
+  color: rgba(201, 188, 228, 0.75);
+}
+
+.cal-cell.diary-cell:hover {
+  background: rgba(201, 188, 228, 0.22);
+}
