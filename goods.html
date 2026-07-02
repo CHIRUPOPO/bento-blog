@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>愛用グッズ・調味料 | 今日の娘弁当</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&family=Zen+Old+Mincho:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <p class="site-eyebrow">FAVORITE ITEMS</p>
+      <h1 class="site-title">愛用グッズ・調味料</h1>
+      <p class="site-subtitle">お弁当作りのお気に入りたち</p>
+    </div>
+  </header>
+
+  <main>
+    <p class="page-nav"><a href="index.html" class="nav-link">‹ カレンダーに戻る</a></p>
+
+    <div id="goods-area" class="goods-area"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>お気に入りの道具と味で、きょうも楽しく🍱</p>
+  </footer>
+
+  <script src="goods.js"></script>
+  <script>
+    // ▼▼ ここから下はプログラムです。さわらなくて大丈夫です ▼▼
+
+    // カテゴリの表示順と見出しの絵文字
+    const CATEGORY_ORDER = [
+      ["お弁当箱", "🍱"],
+      ["保冷剤", "🧊"],
+      ["調理道具", "🍳"],
+      ["調味料", "🧂"],
+      ["お取り寄せ・食材", "🎁"],
+      ["その他", "✨"],
+    ];
+
+    const area = document.getElementById("goods-area");
+
+    if (typeof goodsList === "undefined" || goodsList.length === 0) {
+      area.innerHTML = '<p class="goods-empty">まだ登録がありません。goods.js に追加してね😊</p>';
+    } else {
+      // カテゴリごとにまとめる
+      const groups = {};
+      for (const g of goodsList) {
+        const cat = (g && g.category) ? g.category : "その他";
+        (groups[cat] = groups[cat] || []).push(g);
+      }
+
+      // 決まった順 → その後に、順番表に無いカテゴリを登場順で
+      const ordered = CATEGORY_ORDER.map(function (c) { return c[0]; });
+      const emoji = {};
+      CATEGORY_ORDER.forEach(function (c) { emoji[c[0]] = c[1]; });
+      const cats = ordered.filter(function (c) { return groups[c]; });
+      for (const c in groups) { if (cats.indexOf(c) === -1) cats.push(c); }
+
+      for (const cat of cats) {
+        const section = document.createElement("section");
+        section.className = "goods-group";
+
+        const h = document.createElement("h2");
+        h.className = "goods-cat";
+        h.textContent = (emoji[cat] ? emoji[cat] + " " : "") + cat;
+        section.appendChild(h);
+
+        for (const item of groups[cat]) {
+          const card = document.createElement("div");
+          card.className = "goods-card";
+
+          const name = document.createElement("p");
+          name.className = "goods-name";
+          name.textContent = item.name || "";
+          card.appendChild(name);
+
+          if (item.comment) {
+            const c = document.createElement("p");
+            c.className = "goods-comment";
+            c.textContent = item.comment;
+            card.appendChild(c);
+          }
+
+          if (item.link) {
+            const a = document.createElement("a");
+            a.className = "goods-link";
+            a.href = item.link;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = "見てみる →";
+            card.appendChild(a);
+          }
+
+          section.appendChild(card);
+        }
+
+        area.appendChild(section);
+      }
+    }
+  </script>
+</body>
+</html>

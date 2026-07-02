@@ -503,3 +503,99 @@ main {
     height: 36px;
   }
 }
+
+/* ---------- ページ移動リンク（グッズページへ／戻る） ---------- */
+
+.page-nav {
+  text-align: center;
+  margin: 0 0 34px;
+}
+
+/* index側のグッズボタン（塗りのやさしいボタン） */
+.nav-link {
+  display: inline-block;
+  text-decoration: none;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--lavender-deep);
+  background: #fff;
+  border: 1px solid #e3ddf0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  box-shadow: 0 4px 14px rgba(141, 123, 184, 0.12);
+  transition: background 0.2s, color 0.2s;
+}
+
+.nav-link:hover {
+  background: var(--lavender-pale);
+  color: var(--plum);
+}
+
+/* goods側の「戻る」は控えめに左寄せ */
+.goods-area {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ---------- 愛用グッズ・調味料 ---------- */
+
+.goods-group {
+  margin-bottom: 34px;
+}
+
+.goods-cat {
+  font-family: "Zen Old Mincho", serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--lavender-deep);
+  margin: 0 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 2px dotted #ddd7ea;
+  letter-spacing: 0.08em;
+}
+
+.goods-card {
+  background: #fff;
+  border: 1px solid #e9e5f1;
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(141, 123, 184, 0.08);
+}
+
+.goods-name {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--gray-text);
+  letter-spacing: 0.04em;
+}
+
+.goods-comment {
+  margin: 8px 0 0;
+  font-size: 0.92rem;
+  line-height: 1.9;
+  color: var(--gray-soft);
+}
+
+.goods-link {
+  display: inline-block;
+  margin-top: 12px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  color: #fff;
+  background: var(--lavender-deep);
+  border-radius: 999px;
+  padding: 6px 18px;
+  transition: background 0.2s;
+}
+
+.goods-link:hover {
+  background: var(--plum);
+}
+
+.goods-empty {
+  text-align: center;
+  color: var(--gray-soft);
+}
