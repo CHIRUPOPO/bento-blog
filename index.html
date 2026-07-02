@@ -236,15 +236,25 @@
 
         if (entry) {
           count++;
-          cell.classList.add("has-photo");
-          const img = document.createElement("img");
-          img.className = "cal-photo";
-          img.src = entry.photo;
-          img.alt = nihongoDate(y, m, d) + "のお弁当";
-          img.loading = "lazy";
-          img.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
-          cell.appendChild(img);
           const cellIdx = indexOfKey[key];
+          if (entry.photo) {
+            // 写真がある日
+            cell.classList.add("has-photo");
+            const img = document.createElement("img");
+            img.className = "cal-photo";
+            img.src = entry.photo;
+            img.alt = nihongoDate(y, m, d) + "のお弁当";
+            img.loading = "lazy";
+            img.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
+            cell.appendChild(img);
+          } else {
+            // 写真がない日（フルーツだけ・メモだけの日）→ 小さくメモ表示
+            cell.classList.add("has-note", "diary-cell");
+            const note = document.createElement("span");
+            note.className = "cal-note";
+            note.textContent = entry.comment || "メモ";
+            cell.appendChild(note);
+          }
           cell.addEventListener("click", function () { openModal(cellIdx); });
           cell.setAttribute("role", "button");
           cell.tabIndex = 0;
@@ -275,9 +285,17 @@
       modalIndex = i;
       const item = sortedDays[i];
       const entry = item.entry;
-      modalImg.src = entry.photo;
-      modalImg.alt = nihongoDate(item.y, item.m, item.d) + "のお弁当";
-      modalImg.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
+      if (entry.photo) {
+        // 写真がある日
+        modalImg.src = entry.photo;
+        modalImg.alt = nihongoDate(item.y, item.m, item.d) + "のお弁当";
+        modalImg.onerror = function () { this.onerror = null; this.src = "images/placeholder.svg"; };
+        modalImg.hidden = false;
+      } else {
+        // 写真がない日（フルーツだけ・メモだけ）は画像を出さず、日付とコメントだけ
+        modalImg.hidden = true;
+        modalImg.removeAttribute("src");
+      }
       document.getElementById("modal-date-en").textContent = cafeDate(item.y, item.m, item.d);
       document.getElementById("modal-date-ja").textContent = nihongoDate(item.y, item.m, item.d);
       const commentEl = document.getElementById("modal-comment");
