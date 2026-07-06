@@ -189,10 +189,20 @@
         解析1回あたり数円〜十数円ほどの利用料がかかります。
         キーがなくても、食品データベースからの手動入力はすべて無料で使えます。
       </p>
+      <p class="hk-note">
+        ⚠️ <strong>家族などと共用している端末では、キーを保存しないでください</strong>（その端末を使う人が取り出せてしまいます）。
+        共用端末では、無料のコピペ方式（「食事きろく」タブ）をお使いください。
+        また、万一に備えて <a href="https://platform.claude.com/" target="_blank" rel="noopener">platform.claude.com</a> の設定で
+        <strong>月の利用上限（Spending limit）</strong>を設定しておくと安心です。
+      </p>
       <label class="hk-label">APIキー
         <input type="password" id="api-key" class="hk-input" placeholder="sk-ant-…">
       </label>
-      <button id="api-save" class="hk-btn hk-btn-main">保存する</button>
+      <p class="hk-note" id="api-saved-note" hidden>🔑 キーはこの端末に保存済みです。</p>
+      <div class="hk-row">
+        <button id="api-save" class="hk-btn hk-btn-main">保存する</button>
+        <button id="api-clear" class="hk-btn">🗑 キーを消す</button>
+      </div>
       <p class="hk-status" id="api-status"></p>
 
       <h2 class="hk-h2">データのバックアップ</h2>
