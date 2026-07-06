@@ -709,10 +709,28 @@
   /* ==========================================================
      せってい
      ========================================================== */
-  document.getElementById("api-key").value = load(KEYS.apikey, "");
+  const apiKeyInput = document.getElementById("api-key");
+  const apiSavedNote = document.getElementById("api-saved-note");
+  const apiStatusEl = document.getElementById("api-status");
+
+  function refreshApiKeyUi() {
+    apiSavedNote.hidden = !load(KEYS.apikey, "");
+  }
+
+  apiKeyInput.value = load(KEYS.apikey, "");
+  refreshApiKeyUi();
+
   document.getElementById("api-save").addEventListener("click", () => {
-    save(KEYS.apikey, document.getElementById("api-key").value.trim());
-    document.getElementById("api-status").textContent = "保存しました ✓";
+    save(KEYS.apikey, apiKeyInput.value.trim());
+    apiStatusEl.textContent = apiKeyInput.value.trim() ? "保存しました ✓" : "空のキーを保存しました（＝キーなしの状態です）";
+    refreshApiKeyUi();
+  });
+
+  document.getElementById("api-clear").addEventListener("click", () => {
+    save(KEYS.apikey, "");
+    apiKeyInput.value = "";
+    apiStatusEl.textContent = "この端末からキーを消しました ✓";
+    refreshApiKeyUi();
   });
 
   document.getElementById("export-btn").addEventListener("click", () => {
