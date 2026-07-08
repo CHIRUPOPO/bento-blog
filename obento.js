@@ -372,6 +372,8 @@ const obentoList = [
 
 const oyasumiList = [
 
+  { date: "2026-07-07", note: "休校日" },
+
   { date: "2026-06-17", note: "午前授業" },
 
   { date: "2026-06-03", note: "台風のため休校" },
