@@ -374,15 +374,27 @@ const obentoList = [
    休校・行事などでお弁当がなかった日は、下のお手本のように
    1行追加すると、カレンダーのその日に文字で表示されます。
 
-   ─── お手本（この1行をコピー） ───────────────
+   ─── お手本① 1日だけのとき（この1行をコピー） ─────────
   { date: "2026-06-03", note: "ここに理由を書きます" },
-   ─────────────────────────────
+   ─────────────────────────────────
+
+   ─── お手本② 夏休みなど何日も続くとき ─────────────
+  { from: "2026-07-21", to: "2026-08-30", note: "夏休み" },
+   ─────────────────────────────────
+   「from（はじまりの日）」から「to（おわりの日）」までの毎日に
+   同じ文字が表示されます。冬休み・春休みにも使えます。
 
    ※ 国の祝日（GWや海の日など）は自動で表示されるので
       ここに書かなくて大丈夫です。
    ========================================================== */
 
 const oyasumiList = [
+
+  { date: "2026-08-31", note: "始業式" },
+
+  { from: "2026-07-21", to: "2026-08-30", note: "夏休み" },
+
+  { date: "2026-07-18", note: "終業式" },
 
   { date: "2026-07-17", note: "自宅学習日" },
 
@@ -405,3 +417,46 @@ const oyasumiList = [
   { date: "2026-04-24", note: "移動教室" },
 
 ];
+
+/* ==========================================================
+   ▼ ここから下はプログラムです。さわらなくて大丈夫です ▼
+   上の「お手本②」で書いた期間（from 〜 to）を、
+   1日ずつのメモに自動で変換しています。
+   ========================================================== */
+(function expandOyasumiRanges() {
+  // "2026-7-21" のような書き方でも "2026-07-21" に揃える
+  function tidy(dateText) {
+    const p = String(dateText).trim().split("-");
+    if (p.length !== 3) return null;
+    const y = Number(p[0]), m = Number(p[1]), d = Number(p[2]);
+    if (!y || !m || !d) return null;
+    return y + "-" + String(m).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+  }
+
+  const expanded = [];
+  for (const o of oyasumiList) {
+    if (!o || !o.note) continue;
+
+    // 1日だけのメモは、そのまま
+    if (!o.from || !o.to) { expanded.push(o); continue; }
+
+    // 期間のメモは、はじまりの日からおわりの日まで1日ずつに増やす
+    const start = tidy(o.from), end = tidy(o.to);
+    if (!start || !end) continue;
+    const cur = new Date(start + "T00:00:00");
+    const last = new Date(end + "T00:00:00");
+    let guard = 0; // 書き間違えても止まるように、最大2年ぶんまで
+    while (cur <= last && guard++ < 800) {
+      expanded.push({
+        date: cur.getFullYear() + "-" +
+          String(cur.getMonth() + 1).padStart(2, "0") + "-" +
+          String(cur.getDate()).padStart(2, "0"),
+        note: o.note,
+      });
+      cur.setDate(cur.getDate() + 1);
+    }
+  }
+
+  oyasumiList.length = 0;
+  Array.prototype.push.apply(oyasumiList, expanded);
+})();
