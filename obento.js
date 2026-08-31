@@ -20,7 +20,7 @@ const obentoList = [
 
   {
     date: "2026-09-01",
-    photo: "images/2026-09-01.jpg",
+    photo: "ChatGPT Image 2026年9月1日 08_04_43.png",
     comment: "今日から2学期のお弁当スタート♡",
   },
 
