@@ -68,8 +68,13 @@
     </figure>
   </div>
 
-  <!-- お弁当のデータを読み込みます -->
-  <script src="obento.js"></script>
+  <!-- お弁当のデータを読み込みます
+       うしろに「?v=（そのときの時刻）」を付けることで、ブラウザが古い内容を
+       覚えたままにならず、更新した記録がすぐ表示されます。
+       さわらなくて大丈夫です。 -->
+  <script>
+    document.write('<script src="obento.js?v=' + Date.now() + '"><\/script>');
+  </script>
   <script>
     // ▼▼ ここから下はプログラムです。さわらなくて大丈夫です ▼▼
 
