@@ -19,6 +19,12 @@
 const obentoList = [
 
   {
+    date: "2026-09-16",
+    photo: "images/ChatGPT Image 2026年9月16日 09_07_55.png",
+    comment: "ビビンパで野菜いっぱい食べてね〜♡　さつまいも付き",
+  },
+
+  {
     date: "2026-09-15",
     photo: "images/ChatGPT Image 2026年9月15日 08_07_01.png",
     comment: "今日はお好み焼き✨",
