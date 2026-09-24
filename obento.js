@@ -19,6 +19,12 @@
 const obentoList = [
 
   {
+    date: "2026-09-25",
+    photo: "images/ChatGPT Image 2026年9月25日 07_40_22.png",
+    comment: "文化祭開けで身体疲れているかな？　しっかり食べてね♡",
+  },
+
+  {
     date: "2026-09-19",
     photo: "images/ChatGPT Image 2026年9月19日 19_05_57.png",
     comment: "御飯しっかり食べて文化祭準備頑張れ〜",
@@ -479,6 +485,10 @@ const obentoList = [
    ========================================================== */
 
 const oyasumiList = [
+
+  { date: "2026-09-24", note: "振替休日" },
+
+  { from: "2026-09-20", to: "2026-09-21", note: "文化祭" },
 
   { date: "2026-08-31", note: "始業式" },
 
