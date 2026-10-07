@@ -1,0 +1,49 @@
+# お弁当の写真を images/ にアップすると、自動で
+# 「明るさ補正 → obento.js に追加 → 確認のお願い（PR）作成」までやる仕組み
+name: お弁当を自動でブログに追加
+
+on:
+  push:
+    branches: [main]
+    paths: ["images/**"]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: auto-obento
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pillow
+
+      - name: 写真の名前変更・明るさ補正・記録の追加
+        id: obento
+        run: python3 tools/auto_obento.py "${{ github.event.before }}" "${{ github.sha }}"
+
+      - name: 確認のお願い（PR）を作る
+        if: steps.obento.outputs.label != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          LABEL: ${{ steps.obento.outputs.label }}
+        run: |
+          branch="auto/obento-${{ github.run_id }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git commit -m "${LABEL}のお弁当を追加"
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "${LABEL}のお弁当を追加" \
+            --body "写真の名前変更・明るさ補正・記録の追加を自動でやりました。「Files changed」で中身を確認して、よければ「Merge pull request」を押してください。"
