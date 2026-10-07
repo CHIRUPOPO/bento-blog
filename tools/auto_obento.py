@@ -23,6 +23,7 @@ from brighten import brighten
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 DEFAULT_MESSAGES = ("Add files via upload", "Upload")
 LIST_START = "const obentoList = ["
+PAGE_FILES = ("index.html", "goods.html", "style.css", "goods.js", "health.html", "health.css")
 
 
 def git(*args):
@@ -74,12 +75,18 @@ def main():
     before, after = sys.argv[1], sys.argv[2]
     with open("obento.js", encoding="utf-8") as f:
         js = f.read()
+    # ブログのデザイン用の画像（背景・飾り・アイコンなど）はお弁当ではないので、
+    # どこかのファイルで使われている画像はスキップする
     known = nfc(js)
+    for page in PAGE_FILES:
+        if os.path.exists(page):
+            with open(page, encoding="utf-8") as f:
+                known += nfc(f.read())
 
     entries, dates = [], []
     for src in added_images(before, after):
         if nfc(src) in known or not os.path.exists(src):
-            continue  # すでにブログにのっている写真はスキップ
+            continue  # すでにブログにのっている写真や、デザイン用の画像はスキップ
         sha = commit_of(src, before, after)
         date = date_for(src, sha)
         comment = comment_for(sha)
