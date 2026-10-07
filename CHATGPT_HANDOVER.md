@@ -57,19 +57,54 @@ Codex は ChatGPT の **Plus 以上** のプランで使えます。
 
 ---
 
-## 📸 ふだんの使い方
+## ✨ いちばんラクな方法：写真をアップするだけ（自動）
+
+GitHub に写真をアップすると、GitHub の自動作業の仕組み（GitHub Actions）が
+**名前の変更 → 明るさ補正 → `obento.js` への追加 → 確認のお願い（プルリクエスト）作成**
+までやってくれます。ChatGPT も Claude も使いません（無料）。
+
+### 最初に1回だけやる設定
+
+1. GitHub で `bento-blog` を開き、上の **「Settings」** を押す
+2. 左のメニューの **「Actions」→「General」** を押す
+3. いちばん下の **「Workflow permissions」** で
+   - **「Read and write permissions」** を選ぶ
+   - **「Allow GitHub Actions to create and approve pull requests」** にチェックを入れる
+4. **「Save」** を押す
+
+### ふだんの使い方
+
+1. GitHub で `bento-blog` の **`images` フォルダ**を開く
+2. **「Add file」→「Upload files」** で写真を選ぶ
+3. 下の **「Commit changes」** の欄（いつも「Add files via upload」と書いてあるところ）を消して、
+   **ブログにのせたいコメント** を書く（例：`お野菜いっぱい食べてね♡`）
+   - 空のまま（Add files via upload のまま）だと、コメントなしでのります
+4. 緑色の **「Commit changes」** を押す
+5. 1〜2分たつと、上の **「Pull requests」** に「◯月◯日のお弁当を追加」ができる
+6. それを開いて **「Merge pull request」→「Confirm merge」** を押す
+7. 1〜2分待ってブログを再読み込みすると、お弁当が表示されます 🎉
+
+- 日付は **アップした日** になります。前の日の写真をのせたいときは、写真の名前を
+  `2026-10-08.jpg` のように **その日の日付** にしてからアップしてください
+- 写真がもともと明るいときは、明るさ補正は自動でスキップされます
+- コメントを直したいときは、Merge する前に Codex に頼むか、
+  Merge したあとに `obento.js` をえんぴつマーク ✏️ で直してください
+
+---
+
+## 📸 Codex に頼む方法（コメントをおまかせしたいとき）
 
 1. GitHub で `bento-blog` を開き、**`images` フォルダ**に写真をアップロード
    （「Add file」→「Upload files」→ 写真を選ぶ →「Commit changes」）
-   - 写真の名前は `2026-10-08.jpg` のように **日付・半角英数字** にしておくと確実です
-2. Codex を開き、`bento-blog` の環境を選んで、こんなふうに送る
+   - 上の自動の仕組みが動くので、できたプルリクエストは閉じて（Close）OKです
+2. Codex を開き、入力欄の上の「環境を選択」で **bento-blog** を選んでから、
+   **日付と写真の名前をはっきり書いて** 送る
    ```
-   10月8日の写真お願い。コメントは「〇〇」でお願い
+   AGENTS.md の手順にしたがって、images フォルダの「〇〇.png」を
+   10月8日のお弁当として追加して。コメントは写真を見て考えて
    ```
-   - コメントをおまかせしたいときは「コメントは写真を見て考えて」でOK
-3. Codex の作業が終わったら、中身を見て **「プルリクエストを作成」** を押す
+3. Codex の作業が終わったら、右上の **「PR を作成」** を押す
 4. GitHub でそのプルリクエストを開き、**「Merge pull request」→「Confirm merge」** を押す
-5. 1〜2分待ってブログを再読み込みすると、新しいお弁当が表示されます 🎉
 
 ---
 
