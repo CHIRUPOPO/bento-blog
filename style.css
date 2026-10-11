@@ -496,21 +496,26 @@ main {
     font-size: 1.4rem;
   }
 
+  /* スマホでは写真をなるべく大きく：すき間・日付を小さく、マスを少し縦長に */
+  main {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
   .cal-grid {
-    gap: 4px;
+    gap: 3px;
   }
 
   .cal-cell {
-    border-radius: 7px;
-  }
-
-  .cal-cell {
-    --band: 17px;
+    --band: 12px;
+    border-radius: 6px;
+    aspect-ratio: 1 / 1.1;
   }
 
   .cal-daynum {
-    font-size: 0.74rem;
+    font-size: 0.6rem;
     left: 3px;
+    padding: 0 2px;
   }
 
   .cal-note {
