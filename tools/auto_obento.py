@@ -6,8 +6,9 @@
 #   ・名前を images/YYYY-MM-DD.jpg に変えて、明るさ補正する
 #   ・obento.js の先頭に1件追加する
 #
-#   日付:   写真の名前が YYYY-MM-DD ならその日付、
-#           ちがうときはアップした日（日本時間）
+#   日付:   コメントの頭に「10/9」「10月9日」のように書いてあればその日付、
+#           写真の名前が YYYY-MM-DD ならその日付、
+#           どちらでもないときはアップした日（日本時間）
 #   コメント: アップするときの「Commit changes」の入力欄に書いた文
 #           （何も書かず「Add files via upload」のままなら空）
 #
@@ -56,6 +57,27 @@ def date_for(path, sha):
                           check=True, capture_output=True, text=True, env=env).stdout.strip()
 
 
+# コメントの頭の日付（例: 「10/9 おつかれさま♡」「10月9日　おつかれさま♡」「2026/10/9 …」）
+LEAD_DATE = re.compile(
+    r"^\s*(?:([0-9０-９]{4})[/／\-－.年])?([0-9０-９]{1,2})[/／\-－.月]([0-9０-９]{1,2})日?[\s　]*")
+ZEN2HAN = str.maketrans("０１２３４５６７８９", "0123456789")
+
+
+def split_lead_date(comment, upload_date):
+    m = LEAD_DATE.match(comment)
+    if not m:
+        return None, comment
+    y, mo, d = (int(v.translate(ZEN2HAN)) if v else None for v in m.groups())
+    if not (1 <= mo <= 12 and 1 <= d <= 31):
+        return None, comment
+    if y is None:
+        y = int(upload_date[:4])
+        # 1月に12月の写真を入れるときなどは、前の年にする
+        if f"{y:04d}-{mo:02d}-{d:02d}" > upload_date:
+            y -= 1
+    return f"{y:04d}-{mo:02d}-{d:02d}", comment[m.end():].strip()
+
+
 def comment_for(sha):
     subject = git("log", "-1", "--format=%s", sha).strip()
     body = git("log", "-1", "--format=%b", sha).strip()
@@ -89,7 +111,8 @@ def main():
             continue  # すでにブログにのっている写真や、デザイン用の画像はスキップ
         sha = commit_of(src, before, after)
         date = date_for(src, sha)
-        comment = comment_for(sha)
+        lead, comment = split_lead_date(comment_for(sha), date)
+        date = lead or date
         dest = free_name(date)
 
         im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
