@@ -246,6 +246,7 @@ main {
 }
 
 .cal-cell {
+  --band: 26px;   /* 日付の帯の高さ */
   position: relative;
   aspect-ratio: 1 / 0.92;
   border-radius: 10px;
@@ -270,7 +271,10 @@ main {
 
 .cal-daynum {
   position: absolute;
-  top: 6px;
+  top: 0;
+  height: var(--band);
+  display: flex;
+  align-items: center;
   left: 7px;
   z-index: 2;
   font-family: "Cormorant Garamond", "Playfair Display", serif;
@@ -281,35 +285,25 @@ main {
   padding: 2px 4px;
 }
 
-/* 写真がある日：日付を白い丸の中に */
+/* 写真がある日：上の細い帯に日付、その下に写真
+   （日付が写真の中のぬいぐるみなどに重ならないように） */
 .cal-cell.has-photo {
   cursor: pointer;
 }
 
-.cal-cell.has-photo .cal-daynum {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.75em;
-  height: 1.75em;
-  padding: 0 3px;
-  background: rgba(255, 253, 249, 0.92);
-  border-radius: 999px;
-  box-shadow: 0 1px 4px rgba(62, 50, 41, 0.18);
-}
-
 .cal-photo {
   position: absolute;
-  inset: 0;
+  top: var(--band);
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: calc(100% - var(--band));
   object-fit: cover;
-  transition: transform 0.25s ease;
+  transition: filter 0.25s ease;
 }
 
 .cal-cell.has-photo:hover .cal-photo,
 .cal-cell.has-photo:focus-visible .cal-photo {
-  transform: scale(1.06);
+  filter: brightness(1.07);
 }
 
 .cal-cell.has-photo:focus-visible {
@@ -510,9 +504,12 @@ main {
     border-radius: 7px;
   }
 
+  .cal-cell {
+    --band: 17px;
+  }
+
   .cal-daynum {
     font-size: 0.74rem;
-    top: 3px;
     left: 3px;
   }
 
