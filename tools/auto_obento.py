@@ -2,7 +2,8 @@
 # =========================================================
 # お弁当の写真を自動でブログに追加する（GitHub Actions から呼ばれる）
 #
-#   ・images/ に新しくアップされた写真を見つける
+#   ・images/ の中から、まだブログにのっていない写真を見つける
+#     （何枚か続けてアップしても、取りこぼさないように毎回ぜんぶ確認する）
 #   ・名前を images/YYYY-MM-DD.jpg に変えて、明るさ補正する
 #   ・obento.js の先頭に1件追加する
 #
@@ -13,7 +14,7 @@
 #           （何も書かず「Add files via upload」のままなら空）
 #
 #   使い方:
-#     python3 tools/auto_obento.py 前のコミット 今のコミット
+#     python3 tools/auto_obento.py
 # =========================================================
 import os, re, sys, json, subprocess, unicodedata
 from PIL import Image, ImageOps
@@ -36,16 +37,16 @@ def nfc(s):
     return unicodedata.normalize("NFC", s)
 
 
-def added_images(before, after):
-    if not before or set(before) == {"0"}:
-        before = after + "~1"
-    out = git("diff", "--name-only", "--diff-filter=A", "-z", before, after, "--", "images")
-    return [p for p in out.split("\0") if p and p.lower().endswith(IMAGE_EXTS)]
+def new_images(known):
+    """images/ の中で、どのページでもまだ使われていない写真（＝新しいお弁当）"""
+    out = git("ls-files", "-z", "images")
+    paths = [p for p in out.split("\0") if p and p.lower().endswith(IMAGE_EXTS)]
+    return [p for p in paths if nfc(p) not in known and os.path.exists(p)]
 
 
-def commit_of(path, before, after):
-    rng = after if not before or set(before) == {"0"} else f"{before}..{after}"
-    return git("log", "-1", "--diff-filter=A", "--format=%H", rng, "--", path).strip() or after
+def commit_of(path):
+    """その写真をアップしたときのコミット"""
+    return git("log", "-1", "--diff-filter=A", "--format=%H", "--", path).strip() or "HEAD"
 
 
 def date_for(path, sha):
@@ -94,7 +95,6 @@ def free_name(date):
 
 
 def main():
-    before, after = sys.argv[1], sys.argv[2]
     with open("obento.js", encoding="utf-8") as f:
         js = f.read()
     # ブログのデザイン用の画像（背景・飾り・アイコンなど）はお弁当ではないので、
@@ -106,10 +106,9 @@ def main():
                 known += nfc(f.read())
 
     entries, dates = [], []
-    for src in added_images(before, after):
-        if nfc(src) in known or not os.path.exists(src):
-            continue  # すでにブログにのっている写真や、デザイン用の画像はスキップ
-        sha = commit_of(src, before, after)
+    todo = sorted(new_images(known), key=lambda p: git("log", "-1", "--format=%ct", commit_of(p)))
+    for src in todo:
+        sha = commit_of(src)
         date = date_for(src, sha)
         lead, comment = split_lead_date(comment_for(sha), date)
         date = lead or date
