@@ -1,15 +1,19 @@
 # お弁当の写真を images/ にアップすると、自動で
-# 「明るさ補正 → obento.js に追加 → 確認のお願い（PR）作成」までやる仕組み
+# 「明るさ補正 → obento.js に追加 → そのままブログに反映」までやる仕組み
 name: お弁当を自動でブログに追加
 
 on:
   push:
     branches: [main]
-    paths: ["images/**"]
+    paths:
+      - "images/**"
+      - "tools/auto_obento.py"
+      - ".github/workflows/auto-obento.yml"
+  workflow_dispatch:   # GitHub の「Actions」画面から手動でも動かせる
 
 permissions:
   contents: write
-  pull-requests: write
+  pages: write
 
 concurrency:
   group: auto-obento
@@ -20,6 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: main          # いちばん新しい状態で作業する
           fetch-depth: 0
 
       - uses: actions/setup-python@v5
@@ -30,20 +35,25 @@ jobs:
 
       - name: 写真の名前変更・明るさ補正・記録の追加
         id: obento
-        run: python3 tools/auto_obento.py "${{ github.event.before }}" "${{ github.sha }}"
+        run: python3 tools/auto_obento.py
 
-      - name: 確認のお願い（PR）を作る
+      - name: ブログに反映する（main に保存）
+        if: steps.obento.outputs.label != ''
+        env:
+          LABEL: ${{ steps.obento.outputs.label }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -m "${LABEL}のお弁当を追加"
+          # 同じころに別の写真がアップされていても大丈夫なように、数回やり直す
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep 5
+          done
+          exit 1
+
+      - name: ブログの公開ページを更新する
         if: steps.obento.outputs.label != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          LABEL: ${{ steps.obento.outputs.label }}
-        run: |
-          branch="auto/obento-${{ github.run_id }}"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$branch"
-          git commit -m "${LABEL}のお弁当を追加"
-          git push origin "$branch"
-          gh pr create --base main --head "$branch" \
-            --title "${LABEL}のお弁当を追加" \
-            --body "写真の名前変更・明るさ補正・記録の追加を自動でやりました。「Files changed」で中身を確認して、よければ「Merge pull request」を押してください。"
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
