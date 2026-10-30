@@ -80,7 +80,7 @@ const obentoList = [
 
   {
     date: "2026-10-16",
-    photo: "images/2026-10-16.jpg",
+    photo: "images/2026-10-16.webp",
     comment: "お母さんの残った力を振り絞ってつくったお弁当　笑",
   },
 
