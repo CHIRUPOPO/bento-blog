@@ -19,6 +19,12 @@
 const obentoList = [
 
   {
+    date: "2026-11-06",
+    photo: "images/2026-11-06.jpg",
+    comment: "ふるさと納税の、釜あげしらす丼　お醤油かけて食べてみてね♡",
+  },
+
+  {
     date: "2026-11-05",
     photo: "images/2026-11-05.jpg",
     comment: "今日は角煮つけ麺　たまには麺も食べたいよね♡",
